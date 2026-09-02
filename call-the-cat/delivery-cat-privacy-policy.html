@@ -27,18 +27,21 @@
   <p>Game progress, language, and sound settings are stored locally in the browser or app on the device first. In the Google Play build, when you connect Google Play Games, Google Play Games processes your Play Games identifier and a Saved Games snapshot of the game progress so it can be synced and restored. The operator runs no account server of its own and does not collect a Delivery Cat account, name, phone number, contacts, photos, or precise GPS location. Online ranking profiles are not provided.</p>
   <p>The map and destinations are game presentation only, not real-time location tracking or navigation. If you email the operator, the email address and message are used to answer the request.</p>
 
-  <h2>3. Advertising and platform processing</h2>
+  <h2>3. Analytics</h2>
+  <p>The Google Play and Apple App Store builds use the native Firebase Analytics SDK to send three custom game events: delivery completed, rewarded-ad reward granted, and product purchase completed. Each event carries only an event count, plus the fixed product identifier for a purchase event; the game does not send a player account ID, name, email, save contents, or GPS location. Firebase may also automatically process basic app-usage and technical information required by its Analytics SDK. The web build does not use Firebase Analytics.</p>
+
+  <h2>4. Advertising and platform processing</h2>
   <p>Optional rewarded ads in Google Play and Apple App Store builds use the native AdMob SDK. AdMob or the platform may process an ad request, device/app identifiers, ad interaction, diagnostics, and an IP-derived approximate location to provide and measure the ad.</p>
   <p>The operator does not use precise location or a Delivery Cat account server. Advertising and platform records are retained and deleted according to the relevant provider's policy.</p>
 
-  <h2>4. Payments</h2>
+  <h2>5. Payments</h2>
   <p>The Google Play build sells one non-consumable in-app product (a permanent 2× speed unlock) through Google Play Billing. Google handles the payment method and purchase history; the game only receives the product and purchase state needed to grant, verify and restore the entitlement, and the operator never receives card or bank details. If a refund is issued, the game checks only the purchase state Google reports on launch and on resume in order to turn the entitlement off; it does not receive a refund reason or payment details. The Apple App Store build and the web build have no in-app purchases.</p>
 
-  <h2>5. Storage, deletion, and requests</h2>
+  <h2>6. Storage, deletion, and requests</h2>
   <p>Local data can be replaced through the in-game New game flow or removed through browser/app storage controls. Operator-held inquiry information is kept only as long as needed to handle the request, unless a longer period is required by law.</p>
-  <p>For a request about information held by the operator, contact <a href="mailto:rurununky@naver.com">rurununky@naver.com</a>. Requests about AdMob, Google Play, or Apple records must be made through the relevant provider's privacy controls.</p>
+  <p>For a request about information held by the operator, contact <a href="mailto:rurununky@naver.com">rurununky@naver.com</a>. Requests about Firebase, AdMob, Google Play, or Apple records must be made through the relevant provider's privacy controls.</p>
 
-  <h2>6. Children, security, and changes</h2>
+  <h2>7. Children, security, and changes</h2>
   <p>The game does not create a Delivery Cat server account for a child. Age ratings, parental controls, consent, and child-safety requirements follow the target platform and applicable law. We update this page when the data flow or platform services change and show the updated date.</p>
 
   <section id="korean" class="ko" lang="ko">
@@ -53,18 +56,21 @@
     <p>게임 진행, 언어와 사운드 설정은 브라우저 또는 기기에 먼저 로컬 저장합니다. Google Play 버전에서 Google Play Games에 연결하면 진행 동기화를 위해 Google Play Games가 이용자의 Play Games 식별 정보와 게임 진행 Saved Games 스냅샷을 처리합니다. 운영자는 별도의 계정 서버를 운영하지 않으며 Delivery Cat 계정, 이름, 전화번호, 연락처, 사진, 정확한 GPS 위치를 수집하지 않습니다. 온라인 랭킹 프로필은 제공하지 않습니다.</p>
     <p>지도와 목적지는 게임 연출용이며 실시간 위치 추적이나 길찾기 기능이 아닙니다. 운영자에게 이메일을 보내면 답변을 위해 이메일 주소와 문의 내용을 처리합니다.</p>
 
-    <h2>3. 광고와 플랫폼 처리</h2>
+    <h2>3. 분석</h2>
+    <p>Google Play와 Apple App Store 버전은 네이티브 Firebase Analytics SDK로 배달 완료·보상형 광고 보상 지급·상품 구매 완료의 세 가지 맞춤 게임 이벤트를 보냅니다. 각 이벤트에는 횟수와 구매 이벤트의 경우 고정된 상품 식별자만 담기며, 플레이어 계정 ID·이름·이메일·저장 내용·GPS 위치는 보내지 않습니다. Firebase Analytics SDK가 기본 앱 사용 정보와 기술 정보를 자동으로 처리할 수 있다는 점은 별도입니다. 웹 버전은 Firebase Analytics를 사용하지 않습니다.</p>
+
+    <h2>4. 광고와 플랫폼 처리</h2>
     <p>Google Play와 Apple App Store 버전의 선택형 보상형 광고는 네이티브 AdMob SDK를 사용합니다. 광고 제공과 측정을 위해 AdMob 또는 플랫폼이 광고 요청, 기기·앱 식별자, 광고 상호작용, 진단 정보와 IP에서 추정한 대략적인 위치를 처리할 수 있습니다.</p>
     <p>운영자는 정확한 위치나 Delivery Cat 계정 서버를 사용하지 않습니다. 광고와 플랫폼 기록은 해당 제공자의 정책에 따라 보관·삭제됩니다.</p>
 
-    <h2>4. 결제</h2>
+    <h2>5. 결제</h2>
     <p>Google Play 버전은 Google Play Billing을 통해 비소모성 인앱 상품 1개(영구 2배속 이용권)를 판매합니다. 결제수단과 구매기록은 Google이 처리하며, 게임은 이용권 지급·구매 확인·복원에 필요한 상품 및 구매 상태만 전달받습니다. 운영자는 카드·계좌 정보를 받지 않습니다. 환불이 이루어지면 게임은 실행·재개 시 Google이 알려 주는 구매 상태만 확인해 이용권을 해제하며, 환불 사유나 결제수단 정보는 받지 않습니다. Apple App Store 버전과 웹 버전에는 인앱 결제가 없습니다.</p>
 
-    <h2>5. 저장·삭제·요청</h2>
+    <h2>6. 저장·삭제·요청</h2>
     <p>로컬 데이터는 게임의 새 게임 기능이나 브라우저·앱 저장소 관리 기능으로 삭제할 수 있습니다. 운영자에게 보낸 문의 정보는 답변에 필요한 기간만 보관하며 법령상 더 긴 보관이 필요한 경우는 예외입니다.</p>
-    <p>운영자가 보유한 정보에 관한 요청은 <a href="mailto:rurununky@naver.com">rurununky@naver.com</a>으로 보내 주세요. AdMob·Google Play·Apple 기록은 각 제공자의 개인정보 관리 기능으로 요청해야 합니다.</p>
+    <p>운영자가 보유한 정보에 관한 요청은 <a href="mailto:rurununky@naver.com">rurununky@naver.com</a>으로 보내 주세요. Firebase·AdMob·Google Play·Apple 기록은 각 제공자의 개인정보 관리 기능으로 요청해야 합니다.</p>
 
-    <h2>6. 아동·보안·변경</h2>
+    <h2>7. 아동·보안·변경</h2>
     <p>게임은 아동을 위한 Delivery Cat 서버 계정을 만들지 않습니다. 연령 등급, 보호자 통제, 동의와 아동 보호 요건은 대상 플랫폼과 관련 법령을 따릅니다. 데이터 흐름이나 플랫폼 서비스가 바뀌면 이 페이지를 갱신하고 갱신일을 표시합니다.</p>
   </section>
 
