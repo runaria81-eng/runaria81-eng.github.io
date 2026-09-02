@@ -71,11 +71,14 @@
   }
 
   function apply(groups, mode) {
+    var firstShown = true;
     for (var i = 0; i < groups.length; i++) {
       var show = mode === 'both' || groups[i].lang === mode;
       for (var j = 0; j < groups[i].nodes.length; j++) {
         groups[i].nodes[j].hidden = !show;
       }
+      groups[i].nodes[0].classList.toggle('lang-first', show && firstShown);
+      if (show) firstShown = false;
     }
   }
 
@@ -107,7 +110,10 @@
       'border:1px solid #dbc9b8;border-radius:999px;background:#fff;color:#29231f}' +
       '.lang-switch button:hover{border-color:#a75f3e}' +
       '.lang-switch button[aria-pressed="true"]{background:#a75f3e;border-color:#a75f3e;' +
-      'color:#fff;font-weight:700}';
+      'color:#fff;font-weight:700}' +
+      // 한 언어만 볼 때, 두 언어를 갈라 주던 구분선과 여백이 본문 위에 그대로
+      // 남으면 화면이 비어 보인다. 지금 맨 위에 오는 덩어리에서만 걷어낸다.
+      '.lang-first{margin-top:0!important;padding-top:0!important;border-top:0!important}';
     document.head.appendChild(style);
 
     var bar = document.createElement('nav');
