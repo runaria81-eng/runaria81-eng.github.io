@@ -100,21 +100,21 @@
     }
     if (!hasKo || !hasEn) return; // 두 언어가 다 있을 때만 전환기를 붙인다
 
-    var style = document.createElement('style');
-    style.textContent =
-      '.lang-switch{display:flex;gap:8px;align-items:center;flex-wrap:wrap;' +
-      'margin:0 0 26px;padding:10px 12px;border:1px solid #dbc9b8;border-radius:10px;' +
-      'background:#fffdf8}' +
-      '.lang-switch b{font-size:12px;font-weight:700;color:#6f625a;margin-right:2px}' +
-      '.lang-switch button{font:inherit;font-size:13px;padding:6px 14px;cursor:pointer;' +
-      'border:1px solid #dbc9b8;border-radius:999px;background:#fff;color:#29231f}' +
-      '.lang-switch button:hover{border-color:#a75f3e}' +
-      '.lang-switch button[aria-pressed="true"]{background:#a75f3e;border-color:#a75f3e;' +
-      'color:#fff;font-weight:700}' +
-      // 한 언어만 볼 때, 두 언어를 갈라 주던 구분선과 여백이 본문 위에 그대로
-      // 남으면 화면이 비어 보인다. 지금 맨 위에 오는 덩어리에서만 걷어낸다.
-      '.lang-first{margin-top:0!important;padding-top:0!important;border-top:0!important}';
-    document.head.appendChild(style);
+    // .lang-switch 와 .lang-first 의 실제 모양은 assets/site.css 에 있다.
+    // 거기서 --accent 같은 테마 변수를 쓰므로 이 바는 어느 게임 페이지에
+    // 놓이든 그 페이지의 색을 자동으로 물려받는다. 혹시 site.css 가 로드되지
+    // 않은 예전 페이지가 남아 있을 때를 대비해 최소한의 대체 스타일만 둔다.
+    if (!document.querySelector('link[href*="site.css"]')) {
+      var fallback = document.createElement('style');
+      fallback.textContent =
+        '.lang-switch{display:flex;gap:8px;align-items:center;flex-wrap:wrap;' +
+        'padding:8px 10px;border:1px solid #8883a8;border-radius:999px}' +
+        '.lang-switch button{font:inherit;font-size:13px;padding:6px 14px;cursor:pointer;' +
+        'border:1px solid #8883a8;border-radius:999px;background:transparent;color:inherit}' +
+        '.lang-switch button[aria-pressed="true"]{font-weight:700}' +
+        '.lang-first{margin-top:0!important;padding-top:0!important;border-top:0!important}';
+      document.head.appendChild(fallback);
+    }
 
     var bar = document.createElement('nav');
     bar.className = 'lang-switch';
@@ -154,10 +154,16 @@
       })(options[o]);
     }
 
-    // 문서 카드 안, 첫 언어 덩어리 바로 앞에 놓는다. body 맨 위에 두면
-    // 페이지 테두리 밖에 떠 있는 것처럼 보인다.
-    var anchor = groups[0].nodes[0];
-    anchor.parentElement.insertBefore(bar, anchor);
+    // 페이지에 .topbar (breadcrumb 영역)가 있으면 그 오른쪽에 나란히 붙여
+    // 상단 바 하나로 보이게 한다. 없는 페이지에서는 첫 언어 덩어리 바로
+    // 앞에 놓는다 — body 맨 위에 두면 카드 테두리 밖에 떠 있는 것처럼 보인다.
+    var topbar = document.querySelector('.topbar');
+    if (topbar) {
+      topbar.appendChild(bar);
+    } else {
+      var anchor = groups[0].nodes[0];
+      anchor.parentElement.insertBefore(bar, anchor);
+    }
 
     var saved = null;
     try { saved = localStorage.getItem(STORE_KEY); } catch (e) { /* 무시 */ }

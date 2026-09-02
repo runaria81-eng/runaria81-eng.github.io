@@ -1,0 +1,238 @@
+/*
+ * 공유 디자인 시스템 — 2026-09-03
+ *
+ * 이 사이트의 모든 페이지(허브·법률 문서)가 이 파일 하나를 불러온다.
+ * 구조·타이포·카드·언어 전환 바는 모든 게임이 똑같이 쓰고,
+ * 색만 <html data-theme="..."> 값으로 게임마다 바뀐다.
+ *
+ *   data-theme="galaxy"      Call the Cat: Galaxy — 우주, 남색·보라·금색
+ *   data-theme="callthecat"  Call the Cat (힐링 모바일) — 크림·테라코타
+ *   data-theme="deliverycat" Call the Cat 4 · Delivery Cat — 초록·민트
+ *
+ * 값을 안 주면 galaxy 팔레트가 기본값이다(허브 최상위 페이지용).
+ */
+
+:root{
+  --bg: #0a0e2a;
+  --bg-glow: #262a72;
+  --card: #141a47;
+  --card-strong: #171d52ee;
+  --line: #ad86ff;
+  --accent: #ffd77a;
+  --accent-ink: #241a05;
+  --text: #f5f4ff;
+  --muted: #c7c4dd;
+  --paper: #0a0e2a;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --maxw: 920px;
+  --font: system-ui, -apple-system, "Segoe UI", "Noto Sans KR", sans-serif;
+}
+
+:root[data-theme="callthecat"]{
+  --bg: #fdf6ec;
+  --bg-glow: #f6e3c6;
+  --card: #ffffff;
+  --card-strong: #fffdf8f0;
+  --line: #e7cfa8;
+  --accent: #b6552f;
+  --accent-ink: #ffffff;
+  --text: #33261d;
+  --muted: #85705f;
+  --paper: #fffaf2;
+}
+
+:root[data-theme="deliverycat"]{
+  --bg: #f2f8f1;
+  --bg-glow: #dcefe0;
+  --card: #ffffff;
+  --card-strong: #fffffff0;
+  --line: #bfe0c6;
+  --accent: #197d6e;
+  --accent-ink: #ffffff;
+  --text: #1f2d27;
+  --muted: #5f7269;
+  --paper: #fbfcf8;
+}
+
+*{ box-sizing: border-box }
+
+html{ color-scheme: dark }
+html[data-theme="callthecat"],
+html[data-theme="deliverycat"]{ color-scheme: light }
+
+body{
+  margin: 0;
+  background:
+    radial-gradient(circle at top, var(--bg-glow) 0, var(--bg) 48%, var(--bg) 100%);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.7;
+}
+html[data-theme="callthecat"] body,
+html[data-theme="deliverycat"] body{
+  background: linear-gradient(180deg, var(--bg-glow), var(--bg) 260px, var(--bg) 100%);
+}
+
+main{
+  width: min(var(--maxw), calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 72px;
+}
+
+a{ color: var(--accent) }
+a:hover{ opacity: .85 }
+
+/* ── 상단 바: 언어 전환(JS가 채움) + 이 페이지가 속한 게임/문서 이동 ── */
+.topbar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.topbar nav{
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  font-weight: 700;
+}
+.topbar nav a{
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.topbar nav a:hover{ border-bottom-color: currentColor }
+
+/* ── 히어로: 타이틀 블록 ── */
+.hero{ text-align: center; margin: 8px 0 32px }
+.hero .brand{
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.hero h1{
+  margin: .25em 0 .2em;
+  color: var(--accent);
+  font-size: clamp(1.9rem, 6vw, 3.2rem);
+  line-height: 1.15;
+}
+.hero p{ color: var(--muted); margin: 0; max-width: 46em; margin-inline: auto }
+
+/* ── 카드 그리드 (허브 페이지의 게임/문서 목록) ── */
+.grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 28px 0;
+}
+.card, a.card{
+  display: block;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card-strong);
+  box-shadow: 0 14px 34px rgba(0,0,0,.28);
+  color: var(--text);
+  text-decoration: none;
+  transition: transform .15s ease, border-color .15s ease;
+}
+a.card:hover{ transform: translateY(-2px); border-color: var(--accent) }
+.card h2{ margin: 0 0 8px; color: var(--accent); font-size: 18px }
+.card p, .card small{ color: var(--muted); margin: 0 }
+.card .links{ display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; font-size: 14px; font-weight: 700 }
+
+/* ── 연락처 박스 ── */
+.contact{
+  margin-top: 20px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card-strong);
+}
+.contact h2{ color: var(--accent); margin-top: 0 }
+.contact p{ color: var(--muted); margin: 8px 0 }
+.contact a{ font-weight: 700 }
+
+/* ── 법률 문서 본문(prose) ── */
+.doc{
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card-strong);
+  padding: clamp(20px, 5vw, 44px);
+}
+.doc h1{ color: var(--accent); line-height: 1.25; margin-top: 0 }
+.doc h2{ margin-top: 34px; color: var(--text); font-size: 19px; border-top: 1px solid var(--line); padding-top: 18px }
+.doc h2:first-of-type{ border-top: 0; padding-top: 0 }
+.doc p{ margin: 10px 0 }
+.doc .date, .doc .meta{ color: var(--muted); margin: 0 0 20px }
+.doc .note{
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--accent) 14%, var(--card));
+  border-left: 4px solid var(--accent);
+  color: var(--muted);
+  margin: 0 0 26px;
+}
+.doc table{ width: 100%; border-collapse: collapse; margin: 12px 0 }
+.doc th, .doc td{ border: 1px solid var(--line); padding: 10px; text-align: left; vertical-align: top }
+.doc ul{ padding-left: 1.3em }
+.doc strong{ color: var(--text) }
+
+/* 언어 블록 사이 구분선. 이 저장소는 언어 래퍼 클래스가 세 갈래로
+   갈려 있다(.lang-block 은 새 허브 페이지, .en/.lang/.ko 는 예전
+   문서 페이지에서 그대로 가져온 것) — 마크업을 다 통일하는 대신
+   여기서 셋 다 같은 구분선을 받게 한다. 한 언어만 볼 때 이 여백을
+   지우는 lang-first 규칙은 클래스 이름과 무관하게 항상 적용된다. */
+.lang-block + .lang-block,
+.doc .en,
+.doc .lang,
+.doc .ko{
+  margin-top: 54px;
+  padding-top: 30px;
+  border-top: 1px solid var(--line);
+}
+
+.footer{
+  margin-top: 40px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 14px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.footer a{ font-weight: 700 }
+
+/* ── lang-toggle.js가 주입하는 언어 선택 바 — 여기서 테마 색을 그대로 물려받는다 ── */
+.lang-switch{
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card-strong);
+}
+.lang-switch b{
+  font-size: 12px; font-weight: 700; color: var(--muted);
+  margin-right: 2px; text-transform: none;
+}
+.lang-switch button{
+  font: inherit; font-size: 13px; padding: 6px 14px; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: transparent; color: var(--text);
+}
+.lang-switch button:hover{ border-color: var(--accent) }
+.lang-switch button[aria-pressed="true"]{
+  background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
+  font-weight: 700;
+}
+.lang-first{ margin-top: 0 !important; padding-top: 0 !important; border-top: 0 !important }
+
+@media (max-width: 560px){
+  .topbar{ flex-direction: column; align-items: stretch }
+}

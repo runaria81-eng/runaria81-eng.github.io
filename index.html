@@ -1,22 +1,66 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-theme="galaxy">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Baren81 — Call the Cat Support</title>
-  <style>
-    :root{color-scheme:dark;--bg:#080b24;--card:#141946;--line:#ad86ff;--gold:#ffd77a;--text:#f5f4ff;--muted:#c9c6df}
-    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#25256b 0,#0c1033 42%,var(--bg) 100%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.65}
-    main{width:min(920px,calc(100% - 32px));margin:0 auto;padding:52px 0 72px}header{text-align:center;margin-bottom:30px}h1{margin:.2em 0;color:var(--gold);font-size:clamp(2rem,7vw,3.5rem)}h2{color:var(--gold);margin-top:0}p,small{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}.card{padding:24px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(160deg,rgba(39,42,102,.94),rgba(16,20,59,.96));box-shadow:0 14px 34px #0007}.card p{margin-bottom:0}a{color:var(--gold)}.contact{margin-top:24px;padding:24px;border:1px solid #625a91;border-radius:20px;background:#111536eb}.links{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
-  </style>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body><main>
-  <header><div>Baren81</div><h1>Call the Cat Support</h1><p>Call the Cat 게임의 공식 홈페이지와 지원 안내입니다.</p></header>
-  <section class="grid">
-    <article class="card"><h2>Call the Cat: Galaxy</h2><p>Galaxy의 버그, 결제·구매 복원, 광고, 로그인·저장 문제는 아래 이메일로 문의해 주세요.</p><div class="links"><a href="galaxy-legal.html">법률 문서</a><a href="support/">지원 페이지</a></div></article>
-    <article class="card"><h2>DeliveryCat</h2><p>배달고양이의 버그, 결제·광고, 저장, 계정 또는 개인정보 문의를 받습니다.</p><div class="links"><a href="call-the-cat/">법률 문서</a><a href="support/">지원 페이지</a></div></article>
-  </section>
-  <section class="contact"><h2>Support / 문의</h2><p>For bug reports, purchase issues, advertising issues, privacy questions, or other support requests, please contact us by email.</p><p>버그 신고, 구매·결제, 광고, 개인정보 또는 기타 문의:</p><p><a href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a></p><p>Response language: Korean / English</p></section>
-</main><script src="assets/lang-toggle.js?v=20260902b" defer></script>
+  <div class="topbar"><nav></nav></div>
+
+  <div class="lang-block">
+    <header class="hero">
+      <div class="brand">Baren81</div>
+      <h1>Call the Cat 지원</h1>
+      <p>Call the Cat 시리즈의 공식 홈페이지이자 지원 창구입니다. 게임을 골라 법률 문서나 지원 페이지로 이동하세요.</p>
+    </header>
+    <section class="grid">
+      <article class="card">
+        <h2>Call the Cat: Galaxy</h2>
+        <p>행성 탐사·정복 게임입니다. 버그, 결제·구매 복원, 광고, 로그인·저장 문제를 문의해 주세요.</p>
+        <div class="links"><a href="galaxy-legal.html">법률 문서</a><a href="support/">지원 페이지</a></div>
+      </article>
+      <article class="card">
+        <h2>Call the Cat 4 · Delivery Cat</h2>
+        <p>고양이 배달원 생활 게임입니다. 버그, 결제·광고, 저장, 계정 또는 개인정보 문의를 받습니다.</p>
+        <div class="links"><a href="call-the-cat/">법률 문서</a><a href="support/">지원 페이지</a></div>
+      </article>
+    </section>
+    <section class="contact">
+      <h2>문의</h2>
+      <p>버그 신고, 구매·결제, 광고, 개인정보 또는 기타 문의는 이메일로 보내 주세요.</p>
+      <p><a href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a></p>
+      <p>답변 언어: 한국어 · English</p>
+    </section>
+  </div>
+
+  <div class="lang-block" lang="en">
+    <header class="hero">
+      <div class="brand">Baren81</div>
+      <h1>Call the Cat Support</h1>
+      <p>Official homepage and support hub for the Call the Cat series. Choose a game below for its legal documents or support page.</p>
+    </header>
+    <section class="grid">
+      <article class="card">
+        <h2>Call the Cat: Galaxy</h2>
+        <p>A planet exploration and conquest game. Contact us for bugs, purchase or restore issues, ads, or login/save problems.</p>
+        <div class="links"><a href="galaxy-legal.html">Legal documents</a><a href="support/">Support</a></div>
+      </article>
+      <article class="card">
+        <h2>Call the Cat 4 · Delivery Cat</h2>
+        <p>A cat-courier life-sim game. We handle bug reports, purchases, ads, save data, account, or privacy questions.</p>
+        <div class="links"><a href="call-the-cat/">Legal documents</a><a href="support/">Support</a></div>
+      </article>
+    </section>
+    <section class="contact">
+      <h2>Contact</h2>
+      <p>For bug reports, purchase issues, advertising issues, privacy questions, or other support requests, please email us.</p>
+      <p><a href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a></p>
+      <p>Response language: Korean · English</p>
+    </section>
+  </div>
+</main>
+<script src="assets/lang-toggle.js?v=20260903" defer></script>
 </body>
 </html>
