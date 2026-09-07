@@ -1,0 +1,68 @@
+<div style="text-align:left; max-width:70ch; margin:0 auto; font-family:'Apple SD Gothic Neo','Segoe UI',system-ui,-apple-system,sans-serif; font-size:18px; line-height:1.78; color:#e8edff;">
+
+
+<p style="font-size:14px;color:#9aa7cf;margin:0 0 2.2em;">Call the Cat: Delivery &#8212; launch devlog</p>
+
+<p style="margin:2.2em 0 1.8em;text-align:center;"><img src="https://barendevlog.com/wp-content/uploads/2026/09/48_0_same_value_again.jpg" alt="Writing the same image path on every redraw &#8212; the work you did not think you were doing." style="max-width:100%;height:auto;border-radius:12px;border:1px solid #2a3767;"><br><span style="font-size:14px;color:#9aa7cf;line-height:1.7;">Writing the same image path on every redraw &#8212; the work you did not think you were doing.</span></p>
+
+<p style="margin:0 0 1.45em;font-style:italic;color:#c7cff5;border-left:3px solid #2a3767;padding-left:1em;">TL;DR: A shortcut button's icon kept flickering. The image file was fine and the path was fine. The refresh code was assigning the same image path again on every redraw &#8212; and assigning the same value is not free.</p>
+
+<h2 style="line-height:1.45;margin:0 0 1.1em;">I thought the image was the problem</h2>
+
+<p style="margin:0 0 1.45em;">The icon on the bottom-right shortcut button kept flickering. When an image request failed, it stayed as a broken-image placeholder.</p>
+
+<p style="margin:0 0 1.45em;">I suspected the image file and the network first. The file was intact. The path was right.</p>
+
+<p style="margin:0 0 1.45em;">The cause was the refresh code. <b>Every time the screen redrew, it was writing the same path into the icon again.</b></p>
+
+<h2 style="line-height:1.45;margin:0 0 1.1em;">Assigning the same value is still work</h2>
+
+<p style="margin:0 0 1.45em;">In a browser, assigning an image source <b>re-runs the whole image loading procedure even when the address is identical to what was already there.</b></p>
+
+<p style="margin:0 0 1.45em;">It feels like nothing should happen &#8212; the value is the same. It does not work that way. It requests again and paints again. For a brief moment in between there is an empty state, and that is what the eye reads as a flicker. When the request fails, the empty state stays and you get a broken image.</p>
+
+<p style="margin:0 0 1.45em;">What made it bad is <b>how often refreshes happen</b>. The screen redraws whenever state changes, and the icon was being re-fetched every single time. In a game, state changes constantly, so the flickering never stopped.</p>
+
+<p style="margin:0 0 1.45em;">The fix is simple. <b>Assign only when the path has actually changed</b> &#8212; one small function, and identical values do nothing. Elements that get rebuilt from scratch each time, like list rows, are not the target. Only long-lived elements need this.</p>
+
+<p style="margin:2.2em 0 1.8em;text-align:center;"><img src="https://barendevlog.com/wp-content/uploads/2026/09/48_1_why_it_flickers.jpg" alt="Reassigning an identical address versus assigning only when it changed." style="max-width:100%;height:auto;border-radius:12px;border:1px solid #2a3767;"><br><span style="font-size:14px;color:#9aa7cf;line-height:1.7;">Reassigning an identical address versus assigning only when it changed.</span></p>
+
+<h2 style="line-height:1.45;margin:0 0 1.1em;">What happens when an AI writes "redraw"</h2>
+
+<p style="margin:0 0 1.45em;">Ask an AI to "refresh the screen when state changes" and <b>it picks the most certain method: redraw everything.</b></p>
+
+<p style="margin:0 0 1.45em;">That is not wrong code. The screen is always current and nothing is ever missed. The tests pass. <b>Judged by the resulting values, it is perfect.</b></p>
+
+<p style="margin:0 0 1.45em;">But what a person sees is not the resulting value &#8212; it is <b>the act of redrawing</b>. The cost of writing the same value again, the empty gap in between, the placeholder left behind on failure: tests do not look at any of that.</p>
+
+<p style="margin:0 0 1.45em;">That is what happened here. The code behaved as intended and the tests passed. <b>The flicker was only found when a human looked at the screen.</b> Ask an AI "does it work?" and it answers pass. Ask "how does it look?" and it cannot answer at all.</p>
+
+<p style="margin:0 0 1.45em;">One more thing surfaced in the same session. The script that checks release readiness <b>kept reporting an already-solved item as blocked.</b> The setting lived in a different env file, and the readiness script was only reading the default one. The checker and the actual configuration were looking at different places. <b>A checker's pass or fail is not something to take at face value either &#8212; look once at what it is reading.</b></p>
+
+<p style="margin:2.2em 0 1.8em;text-align:center;"><img src="https://barendevlog.com/wp-content/uploads/2026/09/48_2_three_line_check.jpg" alt="Same value, refresh frequency, and the one tests cannot see &#8212; did you look at it." style="max-width:100%;height:auto;border-radius:12px;border:1px solid #2a3767;"><br><span style="font-size:14px;color:#9aa7cf;line-height:1.7;">Same value, refresh frequency, and the one tests cannot see &#8212; did you look at it.</span></p>
+
+<h2 style="line-height:1.45;margin:0 0 1.1em;">Copy this &#8212; three lines for redraw code</h2>
+
+<p style="margin:0 0 1.45em;">When you get "redraw" code from an AI, look at these three.</p>
+
+<table style="width:100%;border-collapse:collapse;margin:1.6em 0;font-size:16px;"><tr><th style="text-align:left;padding:.55em .7em;border-bottom:2px solid #2a3767;color:#ffb454;">Order</th><th style="text-align:left;padding:.55em .7em;border-bottom:2px solid #2a3767;color:#ffb454;">What you check</th><th style="text-align:left;padding:.55em .7em;border-bottom:2px solid #2a3767;color:#ffb454;">Why</th></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">1</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Does it assign the same value to a long-lived element?</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Images and media re-fetch even when the value is identical</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">2</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">How often does the refresh run?</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">If it is every state change, that cost is paid every time</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">3</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;"><b>Did you look at it?</b></td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Flicker and empty frames are invisible to tests</td></tr></table>
+
+<p style="margin:0 0 1.45em;">Give the AI this one sentence before asking for screen refresh code.</p>
+
+<pre style="margin:1.8em 0;padding:1em 1.1em;overflow-x:auto;background:#0d1330;border:1px solid #2a3767;border-radius:10px;font-size:15px;line-height:1.6;color:#cfd8ff;"><code>Only apply a change to the screen when the value actually differs. If it is the same,
+do nothing &#8212; and tell me which elements are rebuilt each time and which ones stay alive.</code></pre>
+
+<p style="margin:0 0 1.45em;">That sentence stops "redraw everything" from becoming the default.</p>
+
+<h2 style="line-height:1.45;margin:0 0 1.1em;">At a glance</h2>
+
+<table style="width:100%;border-collapse:collapse;margin:1.6em 0;font-size:16px;"><tr><th style="text-align:left;padding:.55em .7em;border-bottom:2px solid #2a3767;color:#ffb454;">Item</th><th style="text-align:left;padding:.55em .7em;border-bottom:2px solid #2a3767;color:#ffb454;">Detail</th></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Symptom</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Shortcut icon flickered constantly; broken image on request failure</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Suspected</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Image file and network</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Actual cause</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Same path reassigned to the icon on every redraw</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Why it matters</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Assigning an identical address still re-runs the full image load</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Fix</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Assign only when the path changed; exclude elements rebuilt each time</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Also found</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Readiness script read a different env file and reported a solved item as blocked</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Verified</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">192 game tests passed, type check, web build, workspace check</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Not verified</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Visual or video confirmation on a real device that the flicker is gone</td></tr></table>
+
+<p style="margin-top:2.6em;padding-top:1.4em;border-top:1px solid #2a3767;"><i>Solo dev of <b>Call the Cat</b>, shipped after 178 days<br>
+on <a href="https://play.google.com/store/apps/details?id=com.baren81.callthecat">Google Play</a><br>
+and <a href="https://store.steampowered.com/app/4822670/Call_the_Cat/">Steam</a>.<br>
+Now building the sequel, <b>Call the Cat: Galaxy</b>, in public.<br>
+Korean devlog: <a href="https://blog.naver.com/runaria81">blog.naver.com/runaria81</a></i></p>
+
+
+</div>

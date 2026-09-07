@@ -1,0 +1,69 @@
+<div style="text-align:left; max-width:70ch; margin:0 auto; font-family:'Apple SD Gothic Neo','Segoe UI',system-ui,-apple-system,sans-serif; font-size:18px; line-height:1.78; color:#e8edff;">
+
+
+<p style="font-size:14px;color:#9aa7cf;margin:0 0 2.2em;">Call the Cat: Galaxy &#8212; devlog #19</p>
+
+<p style="margin:2.2em 0 1.8em;text-align:center;"><img src="https://barendevlog.com/wp-content/uploads/2026/09/47_0_config_vs_app.jpg" alt="The value sits in the config file while the built app has nothing &#8212; the gap between source and artifact." style="max-width:100%;height:auto;border-radius:12px;border:1px solid #2a3767;"><br><span style="font-size:14px;color:#9aa7cf;line-height:1.7;">The value sits in the config file while the built app has nothing &#8212; the gap between source and artifact.</span></p>
+
+<p style="margin:0 0 1.45em;font-style:italic;color:#c7cff5;border-left:3px solid #2a3767;padding-left:1em;">TL;DR: The app installed but would not launch. The ad app ID was sitting in the config file exactly as expected. It just never made it into the built app &#8212; and a build that is missing it still succeeds.</p>
+
+<h2 style="line-height:1.45;margin:0 0 1.1em;">It installed and then refused to open</h2>
+
+<p style="margin:0 0 1.45em;">The internal test build installed fine. Tapping the icon did nothing.</p>
+
+<p style="margin:0 0 1.45em;">The first thing I suspected was the ad setup, so I opened the config file. <b>The ad app ID was there, spelled correctly.</b> That is where I lost a lot of time: the value was present, so I decided the config was not the problem and went looking somewhere else.</p>
+
+<p style="margin:0 0 1.45em;"><b>The config was not the problem. The problem was that the value never travelled to the app.</b></p>
+
+<h2 style="line-height:1.45;margin:0 0 1.1em;">I opened the artifact instead of the settings screen</h2>
+
+<p style="margin:0 0 1.45em;">Rather than re-reading the settings screen, I opened the file the build actually produced.</p>
+
+<p style="margin:0 0 1.45em;">An Android app bundle carries a final settings table that the system reads at launch. I extracted that table and read it. The result:</p>
+
+<p style="margin:0 0 1.45em;">The initialization entry the ads SDK adds <b>was</b> there. The <b>ad app ID entry was not</b>. The code that initializes ads shipped; the value that code needs to read did not.</p>
+
+<p style="margin:0 0 1.45em;">Initializing with a missing value stops right there. That explains it exactly: installs, does not launch.</p>
+
+<p style="margin:0 0 1.45em;">The original config file definitely had the value. Somewhere in the merge of settings tables during the build, it failed to carry over. <b>I have not confirmed which step drops it.</b> I am still checking whether it is a cache or a build hook that never fired, and I am not going to write "the setting was missing" as a conclusion when I do not know that.</p>
+
+<p style="margin:2.2em 0 1.8em;text-align:center;"><img src="https://barendevlog.com/wp-content/uploads/2026/09/47_1_two_places.jpg" alt="&quot;It is in the config&quot; versus &quot;it is in the app&quot; &#8212; two different claims about the same value." style="max-width:100%;height:auto;border-radius:12px;border:1px solid #2a3767;"><br><span style="font-size:14px;color:#9aa7cf;line-height:1.7;">"It is in the config" versus "it is in the app" &#8212; two different claims about the same value.</span></p>
+
+<h2 style="line-height:1.45;margin:0 0 1.1em;">What disappears when you hand this to an AI</h2>
+
+<p style="margin:0 0 1.45em;">Tell an AI "set up the ad app ID" and <b>it edits the config file and stops.</b> Then it reports back: done.</p>
+
+<p style="margin:0 0 1.45em;">That report is not a lie. The value really did go into the config file. The problem is that <b>the scope of an AI's "done" ends at the source code.</b> Whether the value survived into the built artifact is not something it looks at.</p>
+
+<p style="margin:0 0 1.45em;">A successful build does not help either. <b>A build succeeds with the value missing.</b> Compiling and having the values needed at runtime are different questions.</p>
+
+<p style="margin:0 0 1.45em;">So the place to check is neither the settings screen nor the build log. It is the <b>artifact</b>. There is no way to know other than opening the file you shipped and looking for the value inside it.</p>
+
+<p style="margin:2.2em 0 1.8em;text-align:center;"><img src="https://barendevlog.com/wp-content/uploads/2026/09/47_2_three_line_check.jpg" alt="Config file, build result, artifact &#8212; the third line is the one that gets skipped." style="max-width:100%;height:auto;border-radius:12px;border:1px solid #2a3767;"><br><span style="font-size:14px;color:#9aa7cf;line-height:1.7;">Config file, build result, artifact &#8212; the third line is the one that gets skipped.</span></p>
+
+<h2 style="line-height:1.45;margin:0 0 1.1em;">Copy this &#8212; three lines to check after setting a value</h2>
+
+<p style="margin:0 0 1.45em;">Run these three in order whenever you set one value. Stopping after the first two is exactly what caused this.</p>
+
+<table style="width:100%;border-collapse:collapse;margin:1.6em 0;font-size:16px;"><tr><th style="text-align:left;padding:.55em .7em;border-bottom:2px solid #2a3767;color:#ffb454;">Order</th><th style="text-align:left;padding:.55em .7em;border-bottom:2px solid #2a3767;color:#ffb454;">What you check</th><th style="text-align:left;padding:.55em .7em;border-bottom:2px solid #2a3767;color:#ffb454;">Passing means</th></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">1</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Is the value in the config file?</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Read the value and spelling in the source file with your own eyes</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">2</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Did the build succeed?</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">A successful build does not mean the value made it in</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">3</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;"><b>Is the value inside the artifact?</b></td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Open the built app file and find the entry in its final settings table</td></tr></table>
+
+<p style="margin:0 0 1.45em;">Give the AI this one sentence before you ask it to change a setting.</p>
+
+<pre style="margin:1.8em 0;padding:1em 1.1em;overflow-x:auto;background:#0d1330;border:1px solid #2a3767;border-radius:10px;font-size:15px;line-height:1.6;color:#cfd8ff;"><code>After editing the config file, open the built artifact and show me that the value
+actually landed in the final settings table. If you could not check, say exactly
+that: &quot;I only edited the config file and did not verify the artifact.&quot;</code></pre>
+
+<p style="margin:0 0 1.45em;">With that sentence, "I set it up" comes back split into <b>how far it actually went</b>.</p>
+
+<h2 style="line-height:1.45;margin:0 0 1.1em;">At a glance</h2>
+
+<table style="width:100%;border-collapse:collapse;margin:1.6em 0;font-size:16px;"><tr><th style="text-align:left;padding:.55em .7em;border-bottom:2px solid #2a3767;color:#ffb454;">Item</th><th style="text-align:left;padding:.55em .7em;border-bottom:2px solid #2a3767;color:#ffb454;">Detail</th></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Symptom</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Installs from internal testing, will not launch</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Config file</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Ad app ID present and correct</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Artifact</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">SDK init entry present, app ID entry missing from the final settings table</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Measured</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">AAB built 2026-09-05 07:34:30, 147,306,130 bytes, versionCode 50</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Confirmed</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">The value is absent from the final settings table</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Not confirmed</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Which build step drops it. Cache and build hooks still under investigation</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Not done</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Did not modify or reuse the existing artifact</td></tr><tr><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">Lesson</td><td style="padding:.55em .7em;border-bottom:1px solid #1c2547;vertical-align:top;">"It is in the config" and "it is in the app" are two different sentences</td></tr></table>
+
+<p style="margin-top:2.6em;padding-top:1.4em;border-top:1px solid #2a3767;"><i>Solo dev of <b>Call the Cat</b>, shipped after 178 days<br>
+on <a href="https://play.google.com/store/apps/details?id=com.baren81.callthecat">Google Play</a><br>
+and <a href="https://store.steampowered.com/app/4822670/Call_the_Cat/">Steam</a>.<br>
+Now building the sequel, <b>Call the Cat: Galaxy</b>, in public.<br>
+Korean devlog: <a href="https://blog.naver.com/runaria81">blog.naver.com/runaria81</a></i></p>
+
+
+</div>
