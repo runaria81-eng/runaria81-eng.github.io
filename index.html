@@ -1,64 +1,214 @@
 <!doctype html>
-<html lang="ko" data-theme="galaxy">
+<html lang="ko" data-theme="callthecat">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Baren81 — Call the Cat Support</title>
+  <title>Baren81 — 게임 지원 · Game Support</title>
+  <meta name="description" content="Baren81 게임의 공식 지원 페이지. Call the Cat, Galaxy, Delivery, Serving! 의 문의처와 이용약관·개인정보 처리방침을 한곳에서 볼 수 있습니다.">
   <link rel="stylesheet" href="assets/site.css">
+  <style>
+  /*
+   * 이 페이지만의 조정 — 2026-09-07
+   * 목적: 네 게임과 문의처가 "첫 화면에서 스크롤 없이" 다 보여야 한다.
+   * 스토어 심사자가 앱을 찾아 헤매면 반려 사유가 되기 때문이다.
+   * assets/site.css 는 법률 문서 페이지가 함께 쓰므로 건드리지 않고
+   * 여기서만 여백과 카드 밀도를 줄인다.
+   */
+  main{ padding-top: 20px; padding-bottom: 20px }
+  .hero{ margin: 4px 0 18px }
+  .hero h1{ font-size: clamp(1.5rem, 4.4vw, 2.3rem) }
+  .hero p{ font-size: 15px }
+
+  /* 문의처를 게임 목록보다 위에 둔다 — 심사자와 이용자가 제일 먼저 찾는 것 */
+  .contact-top{
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;
+    padding: 14px 18px; margin-bottom: 18px;
+    border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--card-strong);
+  }
+  .contact-top .mail{ font-size: 17px; font-weight: 700 }
+  .contact-top .hint{ color: var(--muted); font-size: 13px; margin: 0 }
+
+  .grid{ margin: 0; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) }
+  .card{ padding: 16px 18px; box-shadow: 0 8px 20px rgba(0,0,0,.10) }
+  .card h2{ font-size: 17px; margin-bottom: 2px }
+  .card .plat{ color: var(--muted); font-size: 13px; margin: 0 0 10px }
+
+  /* 문서·스토어 링크를 알약 모양으로 — 줄바꿈이 나도 눌러야 할 곳이 분명하다 */
+  .card .links{ margin-top: 0; gap: 8px; font-size: 13px }
+  .card .links a{
+    text-decoration: none; padding: 5px 11px;
+    border: 1px solid var(--line); border-radius: 999px;
+    color: var(--text); font-weight: 600; white-space: nowrap;
+  }
+  .card .links a:hover{ border-color: var(--accent); color: var(--accent); opacity: 1 }
+  .card .links a.store{ border-color: var(--accent); color: var(--accent) }
+  .card .links .sep{ flex-basis: 100%; height: 0; margin: 0 }
+
+  .note-soon{ color: var(--muted); font-size: 13px; align-self: center }
+  .footer{ margin-top: 14px }
+
+  /* 좁은 화면에서는 카드가 한 줄로 쌓이므로 여백을 더 줄여 스크롤을 짧게 만든다 */
+  @media (max-width: 560px){
+    .hero{ margin-bottom: 14px }
+    .hero p{ font-size: 14px }
+    .contact-top{ padding: 12px 14px; gap: 6px 12px; margin-bottom: 14px }
+    .contact-top .hint{ font-size: 12.5px }
+    .grid{ gap: 12px }
+    .card{ padding: 14px 15px }
+    .card .links a{ padding: 4px 10px }
+
+    /* 언어 바가 두 줄로 접히면서 본문을 아래로 밀어낸다.
+       버튼만으로 뜻이 통하므로 좁은 화면에서는 "Language / 언어" 라벨만 감춘다.
+       (<nav aria-label> 은 그대로라 스크린리더에는 이름이 남는다) */
+    .lang-switch{ padding: 6px 8px; gap: 6px }
+    .lang-switch b{ display: none }
+    .lang-switch button{ padding: 5px 12px; font-size: 12.5px }
+  }
+  </style>
 </head>
 <body><main>
   <div class="topbar"><nav></nav></div>
 
+  <!--
+    ── 새 게임을 추가할 때 ──────────────────────────────────────────
+    아래 <article class="card"> 한 덩어리를 복사해 그리드 맨 끝에 붙이면 된다.
+    한국어 블록과 영어 블록 두 곳 모두에 넣어야 한다(같은 페이지 안에서
+    assets/lang-toggle.js 가 <h1> 을 기준으로 언어를 나눈다).
+    카드가 늘어나면 그리드가 알아서 아래로 줄을 늘린다 — 다른 곳은 고칠 것이 없다.
+    스토어 링크는 실제로 열리는 주소만 넣는다. 죽은 링크는 그 자체가 심사 반려 사유다.
+  -->
+
   <div class="lang-block">
     <header class="hero">
       <div class="brand">Baren81</div>
-      <h1>Call the Cat 지원</h1>
-      <p>Call the Cat 시리즈의 공식 홈페이지이자 지원 창구입니다. 게임을 골라 법률 문서나 지원 페이지로 이동하세요.</p>
+      <h1>게임 지원</h1>
+      <p>Baren81이 만든 게임의 공식 지원 창구입니다. 게임을 고르면 이용약관과 개인정보 처리방침이 바로 열립니다.</p>
     </header>
+
+    <section class="contact-top">
+      <strong>문의</strong>
+      <a class="mail" href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a>
+      <p class="hint">한국어 · English 답변 &nbsp;|&nbsp; 게임명, 기기와 OS, 앱 버전, 문제가 생긴 과정을 같이 보내 주시면 빠릅니다.</p>
+    </section>
+
     <section class="grid">
       <article class="card">
-        <h2>Call the Cat: Galaxy</h2>
-        <p>행성 탐사·정복 게임입니다. 버그, 결제·구매 복원, 광고, 로그인·저장 문제를 문의해 주세요.</p>
-        <div class="links"><a href="galaxy-legal.html">법률 문서</a><a href="support/">지원 페이지</a></div>
+        <h2>Call the Cat</h2>
+        <p class="plat">모바일 · Steam</p>
+        <div class="links">
+          <a href="call-the-cat/terms-of-service.html">이용약관</a>
+          <a href="call-the-cat/privacy-policy.html">개인정보 처리방침</a>
+          <a href="call-the-cat/steam-terms-of-service.html">Steam 약관</a>
+          <a href="call-the-cat/steam-privacy-policy.html">Steam 개인정보</a>
+          <span class="sep"></span>
+          <a class="store" href="https://play.google.com/store/apps/details?id=com.baren81.callthecat">Google Play</a>
+          <a class="store" href="https://store.steampowered.com/app/4822670/Call_the_Cat/">Steam</a>
+        </div>
       </article>
+
+      <article class="card">
+        <h2>Call the Cat: Galaxy</h2>
+        <p class="plat">모바일 · Steam</p>
+        <div class="links">
+          <a href="galaxy-terms-of-service.html">이용약관</a>
+          <a href="galaxy-privacy-policy.html">개인정보 처리방침</a>
+          <a href="galaxy-steam-terms-of-service.html">Steam 약관</a>
+          <a href="galaxy-steam-privacy-policy.html">Steam 개인정보</a>
+          <span class="sep"></span>
+          <a class="store" href="https://apps.apple.com/kr/app/call-the-cat-galaxy/id6800940131">App Store</a>
+        </div>
+      </article>
+
       <article class="card">
         <h2>Call the Cat: Delivery</h2>
-        <p>고양이 배달원 생활 게임입니다. 버그, 결제·광고, 저장, 계정 또는 개인정보 문의를 받습니다.</p>
-        <div class="links"><a href="call-the-cat/">법률 문서</a><a href="support/">지원 페이지</a></div>
+        <p class="plat">모바일 · 웹</p>
+        <div class="links">
+          <a href="call-the-cat/delivery-cat-terms-of-use.html">이용약관</a>
+          <a href="call-the-cat/delivery-cat-privacy-policy.html">개인정보 처리방침</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Call the Cat: Serving!</h2>
+        <p class="plat">웹 · 모바일</p>
+        <div class="links">
+          <a href="call-the-cat/call-the-cat-serving-terms.html">이용약관</a>
+          <a href="call-the-cat/call-the-cat-serving-privacy.html">개인정보 처리방침</a>
+        </div>
       </article>
     </section>
-    <section class="contact">
-      <h2>문의</h2>
-      <p>버그 신고, 구매·결제, 광고, 개인정보 또는 기타 문의는 이메일로 보내 주세요.</p>
-      <p><a href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a></p>
-      <p>답변 언어: 한국어 · English</p>
-    </section>
+
+    <div class="footer">
+      <span>© 2026 Baren81</span>
+      <span><a href="call-the-cat/">문서 전체 보기</a> · <a href="support/">지원 안내</a></span>
+    </div>
   </div>
 
   <div class="lang-block" lang="en">
     <header class="hero">
       <div class="brand">Baren81</div>
-      <h1>Call the Cat Support</h1>
-      <p>Official homepage and support hub for the Call the Cat series. Choose a game below for its legal documents or support page.</p>
+      <h1>Game Support</h1>
+      <p>Official support hub for games by Baren81. Pick a game to open its Terms of Service and Privacy Policy.</p>
     </header>
+
+    <section class="contact-top">
+      <strong>Contact</strong>
+      <a class="mail" href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a>
+      <p class="hint">We reply in English · Korean &nbsp;|&nbsp; Please include the game name, device and OS, app version, and the steps that led to the problem.</p>
+    </section>
+
     <section class="grid">
       <article class="card">
-        <h2>Call the Cat: Galaxy</h2>
-        <p>A planet exploration and conquest game. Contact us for bugs, purchase or restore issues, ads, or login/save problems.</p>
-        <div class="links"><a href="galaxy-legal.html">Legal documents</a><a href="support/">Support</a></div>
+        <h2>Call the Cat</h2>
+        <p class="plat">Mobile · Steam</p>
+        <div class="links">
+          <a href="call-the-cat/terms-of-service.html">Terms of Service</a>
+          <a href="call-the-cat/privacy-policy.html">Privacy Policy</a>
+          <a href="call-the-cat/steam-terms-of-service.html">Steam Terms</a>
+          <a href="call-the-cat/steam-privacy-policy.html">Steam Privacy</a>
+          <span class="sep"></span>
+          <a class="store" href="https://play.google.com/store/apps/details?id=com.baren81.callthecat">Google Play</a>
+          <a class="store" href="https://store.steampowered.com/app/4822670/Call_the_Cat/">Steam</a>
+        </div>
       </article>
+
+      <article class="card">
+        <h2>Call the Cat: Galaxy</h2>
+        <p class="plat">Mobile · Steam</p>
+        <div class="links">
+          <a href="galaxy-terms-of-service.html">Terms of Service</a>
+          <a href="galaxy-privacy-policy.html">Privacy Policy</a>
+          <a href="galaxy-steam-terms-of-service.html">Steam Terms</a>
+          <a href="galaxy-steam-privacy-policy.html">Steam Privacy</a>
+          <span class="sep"></span>
+          <a class="store" href="https://apps.apple.com/kr/app/call-the-cat-galaxy/id6800940131">App Store</a>
+        </div>
+      </article>
+
       <article class="card">
         <h2>Call the Cat: Delivery</h2>
-        <p>A cat-courier life-sim game. We handle bug reports, purchases, ads, save data, account, or privacy questions.</p>
-        <div class="links"><a href="call-the-cat/">Legal documents</a><a href="support/">Support</a></div>
+        <p class="plat">Mobile · Web</p>
+        <div class="links">
+          <a href="call-the-cat/delivery-cat-terms-of-use.html">Terms of Use</a>
+          <a href="call-the-cat/delivery-cat-privacy-policy.html">Privacy Policy</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Call the Cat: Serving!</h2>
+        <p class="plat">Web · Mobile</p>
+        <div class="links">
+          <a href="call-the-cat/call-the-cat-serving-terms-en.html">Terms of Use</a>
+          <a href="call-the-cat/call-the-cat-serving-privacy-en.html">Privacy Policy</a>
+        </div>
       </article>
     </section>
-    <section class="contact">
-      <h2>Contact</h2>
-      <p>For bug reports, purchase issues, advertising issues, privacy questions, or other support requests, please email us.</p>
-      <p><a href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a></p>
-      <p>Response language: Korean · English</p>
-    </section>
+
+    <div class="footer">
+      <span>© 2026 Baren81</span>
+      <span><a href="call-the-cat/">All documents</a> · <a href="support/">Support notes</a></span>
+    </div>
   </div>
 </main>
 <script src="assets/lang-toggle.js?v=20260903" defer></script>
