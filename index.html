@@ -4,59 +4,232 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Baren81 — 게임 지원 · Game Support</title>
-  <meta name="description" content="Baren81 게임의 공식 지원 페이지. Call the Cat, Galaxy, Delivery, Serving! 의 문의처와 이용약관·개인정보 처리방침을 한곳에서 볼 수 있습니다.">
-  <link rel="stylesheet" href="assets/site.css">
+  <meta name="description" content="Baren81 게임의 공식 지원 페이지. Call the Cat, Galaxy, Delivery, Serving! 의 문의처, 자주 묻는 질문, 이용약관·개인정보 처리방침을 한곳에서 볼 수 있습니다.">
+  <link rel="stylesheet" href="assets/site.css?v=20260909">
   <style>
   /*
-   * 이 페이지만의 조정 — 2026-09-07
-   * 목적: 네 게임과 문의처가 "첫 화면에서 스크롤 없이" 다 보여야 한다.
-   * 스토어 심사자가 앱을 찾아 헤매면 반려 사유가 되기 때문이다.
-   * assets/site.css 는 법률 문서 페이지가 함께 쓰므로 건드리지 않고
-   * 여기서만 여백과 카드 밀도를 줄인다.
+   * 지원 허브 전용 스타일 — 2026-09-09 개편
+   *
+   * 지켜야 할 제약(2026-09-07부터 그대로): 네 게임과 문의처가 첫 화면에서
+   * 스크롤 없이 다 보여야 한다. 스토어 심사자가 앱을 찾아 헤매면 반려 사유다.
+   * 그래서 아이콘을 넣어 카드가 커진 만큼 여백을 줄였고, 새로 넣은 안내
+   * (자주 묻는 질문·메일 초안·채널)는 전부 게임 카드 아래에 둔다.
+   *
+   * assets/site.css 는 법률 문서 페이지가 함께 쓰므로 건드리지 않는다.
+   * 색은 site.css 의 data-theme="callthecat" 변수를 그대로 쓴다.
    */
-  main{ padding-top: 20px; padding-bottom: 20px }
-  .hero{ margin: 4px 0 18px }
-  .hero h1{ font-size: clamp(1.5rem, 4.4vw, 2.3rem) }
-  .hero p{ font-size: 15px }
-
-  /* 문의처를 게임 목록보다 위에 둔다 — 심사자와 이용자가 제일 먼저 찾는 것 */
-  .contact-top{
-    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;
-    padding: 14px 18px; margin-bottom: 18px;
-    border: 1px solid var(--line); border-radius: var(--radius);
-    background: var(--card-strong);
+  /* 마비옛체 — 넥슨이 배포하는 OTF 를 고치지 않고 그대로 담았다.
+     사용 조건이 "배포되는 형태 그대로" 를 요구하므로 woff2 로 줄이지 않았고,
+     넥슨 CDN 은 CORS 헤더가 없어 직접 링크할 수 없다.
+     자세한 근거와 해시는 assets/fonts/README.md 에 있다.
+     제목에만 쓴다 — 장식용 서체라 본문 가독성이 떨어진다. */
+  @font-face{
+    font-family: "Mabinogi Classic";
+    src: url("assets/fonts/Mabinogi_Classic_OTF.otf") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
   }
-  .contact-top .mail{ font-size: 17px; font-weight: 700 }
-  .contact-top .hint{ color: var(--muted); font-size: 13px; margin: 0 }
+  :root{
+    --font-title: "Mabinogi Classic", var(--font);
+  }
 
-  .grid{ margin: 0; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) }
-  .card{ padding: 16px 18px; box-shadow: 0 8px 20px rgba(0,0,0,.10) }
-  .card h2{ font-size: 17px; margin-bottom: 2px }
-  .card .plat{ color: var(--muted); font-size: 13px; margin: 0 0 10px }
+  main{ padding-top: 16px; padding-bottom: 24px }
 
-  /* 문서·스토어 링크를 알약 모양으로 — 줄바꿈이 나도 눌러야 할 곳이 분명하다 */
-  .card .links{ margin-top: 0; gap: 8px; font-size: 13px }
+  /* 상단바 — 언어 바와 붙어 보이지 않게 아래 여백을 넉넉히 준다 */
+  .topbar{ margin-bottom: 26px; gap: 14px 20px; min-height: 44px }
+
+  /* ── 머리말 ─────────────────────────────────────────── */
+  .hero{ margin: 2px 0 18px; text-align: center }
+  .hero .kicker{
+    font-size: 11.5px; font-weight: 800; letter-spacing: 1.4px;
+    color: var(--muted); margin: 0 0 5px;
+  }
+  .hero h1{
+    font-family: var(--font-title);
+    font-size: clamp(2rem, 6vw, 3rem); margin: 0 0 8px;
+    letter-spacing: 0; line-height: 1.2; font-weight: 400;
+  }
+  /* 가운데 정렬한 문장은 폭을 좁게 잡아야 줄이 고르게 떨어진다.
+     text-wrap:balance 를 지원하는 브라우저에서는 줄 길이까지 맞춰 준다. */
+  .hero .lede{
+    font-size: 14.5px; margin: 0 auto 14px; color: var(--muted);
+    max-width: 40ch; text-align: center; text-wrap: balance; line-height: 1.6;
+  }
+
+  .hero-contact{
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    gap: 8px 12px; text-align: center;
+    padding: 12px 16px;
+    border: 2px solid var(--text); border-radius: var(--radius-sm);
+    background: var(--card); box-shadow: 4px 4px 0 var(--line);
+  }
+  .hero-contact .hc-label{ font-weight: 800; font-size: 13px; letter-spacing: .3px }
+  .hero-contact .hc-mail{ font-size: 16.5px; font-weight: 700; text-decoration: none }
+  .hero-note{ color: var(--muted); font-size: 12.5px; margin: 7px 0 0 }
+
+  .copy-mail, .btn{
+    font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+    padding: 6px 13px; border-radius: 999px;
+    border: 1.5px solid var(--line); background: var(--paper); color: var(--text);
+  }
+  .copy-mail:hover, .btn:hover{ border-color: var(--accent); color: var(--accent) }
+
+  /* ── 절 ─────────────────────────────────────────────── */
+  .sect{ margin-top: 26px }
+  .sect > h2{
+    display: flex; align-items: center; gap: 9px;
+    font-family: var(--font-title); font-weight: 400;
+    font-size: 19px; margin: 0 0 11px; letter-spacing: 0;
+  }
+  .sect > h2 .sn{
+    font-size: 11px; font-weight: 800; letter-spacing: .6px;
+    padding: 3px 8px; border-radius: 6px;
+    background: var(--accent); color: var(--accent-ink);
+  }
+  .sect-lede{ color: var(--muted); font-size: 13.5px; margin: -4px 0 12px; max-width: 66ch }
+
+  /* ── 게임 카드 ──────────────────────────────────────── */
+  .grid{ margin: 0; gap: 13px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) }
+  .card{
+    padding: 14px 15px; border: 2px solid var(--text); border-radius: var(--radius-sm);
+    background: var(--card); box-shadow: 4px 4px 0 var(--line);
+    transition: transform .14s, box-shadow .14s;
+  }
+  .card:hover{ transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--accent) }
+  .card-top{ display: grid; grid-template-columns: 68px 1fr auto; gap: 12px; align-items: start }
+  .card .ico{
+    width: 68px; height: 68px; border-radius: 16px; display: block;
+    border: 1.5px solid var(--line); background: var(--paper);
+  }
+  .card-head{ min-width: 0 }
+  .card h3{
+    font-family: var(--font-title); font-weight: 400;
+    font-size: 19px; margin: 0 0 3px; line-height: 1.25;
+  }
+  .card .plat{ color: var(--muted); font-size: 12px; margin: 0 }
+  .card .desc{ font-size: 13.5px; margin: 10px 0 10px; line-height: 1.55 }
+
+  .badge{
+    flex-shrink: 0; white-space: nowrap;
+    padding: 3px 9px; border-radius: 999px;
+    font-size: 10.5px; font-weight: 800; letter-spacing: .4px;
+    border: 1.5px solid var(--line); color: var(--muted); background: var(--paper);
+  }
+  .badge.live{ border-color: var(--accent); background: var(--accent); color: var(--accent-ink) }
+
+  .card .links{ display: flex; flex-wrap: wrap; gap: 7px; font-size: 12.5px; margin: 0 }
   .card .links a{
     text-decoration: none; padding: 5px 11px;
-    border: 1px solid var(--line); border-radius: 999px;
+    border: 1.5px solid var(--line); border-radius: 999px;
     color: var(--text); font-weight: 600; white-space: nowrap;
   }
   .card .links a:hover{ border-color: var(--accent); color: var(--accent); opacity: 1 }
   .card .links a.store{ border-color: var(--accent); color: var(--accent) }
   .card .links .sep{ flex-basis: 100%; height: 0; margin: 0 }
 
-  .note-soon{ color: var(--muted); font-size: 13px; align-self: center }
-  .footer{ margin-top: 14px }
+  /* ── 자주 묻는 질문 (아코디언) ──────────────────────── */
+  .qa{
+    border: 2px solid var(--text); border-radius: var(--radius-sm);
+    background: var(--card); margin-bottom: 9px; box-shadow: 3px 3px 0 var(--line);
+  }
+  .qa > summary{
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 15px; cursor: pointer; list-style: none;
+    font-weight: 700; font-size: 14.5px;
+  }
+  .qa > summary::-webkit-details-marker{ display: none }
+  .qa > summary::after{
+    content: "+"; margin-left: auto;
+    font-size: 19px; font-weight: 700; line-height: 1; color: var(--muted);
+  }
+  .qa[open] > summary::after{ content: "\2212" }
+  .qa > summary:hover{ color: var(--accent) }
+  .qa .num{
+    font-size: 11px; font-weight: 800; letter-spacing: .5px;
+    padding: 3px 7px; border-radius: 5px;
+    border: 1.5px solid var(--line); color: var(--muted); background: var(--paper);
+  }
+  .qa-body{ padding: 0 15px 13px 15px; border-top: 1.5px dashed var(--line); margin-top: -1px; padding-top: 12px }
+  .qa-body p{ font-size: 13.5px; line-height: 1.65; margin: 0 0 8px; color: var(--muted) }
+  .qa-body p:last-child{ margin-bottom: 0 }
+  .qa-body b{ color: var(--text) }
 
-  /* 좁은 화면에서는 카드가 한 줄로 쌓이므로 여백을 더 줄여 스크롤을 짧게 만든다 */
+  /* ── 메일 초안 만들기 ───────────────────────────────── */
+  .draft{
+    border: 2px solid var(--text); border-radius: var(--radius-sm);
+    background: var(--card); box-shadow: 4px 4px 0 var(--line); padding: 15px 16px;
+  }
+  .draft .row{ display: grid; grid-template-columns: repeat(auto-fit, minmax(170px,1fr)); gap: 11px }
+  .draft label{
+    display: block; font-size: 12px; font-weight: 700;
+    letter-spacing: .2px; margin-bottom: 11px;
+  }
+  .draft label.full{ display: block }
+  .draft select, .draft input, .draft textarea{
+    display: block; width: 100%; margin-top: 5px;
+    font: inherit; font-size: 13.5px; font-weight: 400;
+    padding: 8px 10px; border-radius: 9px;
+    border: 1.5px solid var(--line); background: var(--paper); color: var(--text);
+  }
+  .draft textarea{ resize: vertical; line-height: 1.55 }
+  .draft select:focus, .draft input:focus, .draft textarea:focus{
+    outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent);
+  }
+  .draft .warn{
+    font-size: 12.5px; line-height: 1.6; color: var(--muted); margin: 2px 0 12px;
+    padding: 9px 12px; border-left: 3px solid var(--accent);
+    background: var(--paper); border-radius: 0 8px 8px 0;
+  }
+  .draft-actions{ display: flex; flex-wrap: wrap; gap: 9px; align-items: center }
+  .btn{ text-decoration: none; display: inline-block; padding: 9px 16px; font-size: 13px }
+  .btn.primary{
+    background: var(--accent); color: var(--accent-ink);
+    border-color: var(--accent); font-weight: 800;
+  }
+  .btn.primary:hover{ opacity: .9; color: var(--accent-ink) }
+  .draft-note{ font-size: 12px; color: var(--muted); margin: 9px 0 0 }
+
+  /* ── 다른 곳 ────────────────────────────────────────── */
+  .channels{ display: flex; flex-wrap: wrap; gap: 8px }
+  .channels a{
+    text-decoration: none; padding: 9px 15px; font-size: 13px; font-weight: 700;
+    border: 1.5px solid var(--line); border-radius: 999px;
+    color: var(--text); background: var(--card);
+  }
+  .channels a:hover{ border-color: var(--accent); color: var(--accent); opacity: 1 }
+
+  .footer{
+    margin-top: 26px; display: block; text-align: center;
+    font-size: 12.5px; line-height: 1.7;
+  }
+  .footer .fcopy{ margin: 0 }
+  .footer .fcredit{ margin: 4px 0 0; color: var(--muted); font-size: 11.5px }
+  .footer a{ font-weight: 700 }
+
+  /* ── 좁은 화면 ──────────────────────────────────────── */
   @media (max-width: 560px){
+    .topbar{ margin-bottom: 18px }
     .hero{ margin-bottom: 14px }
-    .hero p{ font-size: 14px }
-    .contact-top{ padding: 12px 14px; gap: 6px 12px; margin-bottom: 14px }
-    .contact-top .hint{ font-size: 12.5px }
-    .grid{ gap: 12px }
-    .card{ padding: 14px 15px }
-    .card .links a{ padding: 4px 10px }
+    .hero h1{ margin-bottom: 6px }
+    .hero .lede{ font-size: 13px; margin-bottom: 10px }
+    .hero-contact{ padding: 10px 13px; gap: 5px 10px }
+    .hero-contact .hc-mail{ font-size: 15px }
+    .hero-note{ font-size: 12px; margin-top: 6px }
+    .sect{ margin-top: 20px }
+    .grid{ gap: 10px }
+    .card{ padding: 11px 12px }
+    /* 배지를 아래로 떨어뜨리지 않는다 — 좁은 화면에서 카드 하나가 통째로
+       한 줄 더 길어지면 네 게임이 첫 화면 밖으로 밀린다. */
+    .card-top{ grid-template-columns: 54px 1fr auto; gap: 10px }
+    .card .ico{ width: 54px; height: 54px; border-radius: 13px }
+    .card h3{ font-size: 17.5px }
+    .badge{ font-size: 10px; padding: 2px 7px }
+    .card .desc{ font-size: 12.5px; line-height: 1.5; margin: 8px 0 8px }
+    .card .links{ gap: 6px; font-size: 12px }
+    .card .links a{ padding: 4px 9px }
+    .qa > summary{ padding: 11px 13px; font-size: 14px }
+    .qa-body{ padding: 11px 13px 12px }
 
     /* 언어 바가 두 줄로 접히면서 본문을 아래로 밀어낸다.
        버튼만으로 뜻이 통하므로 좁은 화면에서는 "Language / 언어" 라벨만 감춘다.
@@ -65,6 +238,11 @@
     .lang-switch b{ display: none }
     .lang-switch button{ padding: 5px 12px; font-size: 12.5px }
   }
+
+  @media (prefers-reduced-motion: reduce){
+    .card{ transition: none }
+    .card:hover{ transform: none }
+  }
   </style>
 </head>
 <body><main>
@@ -72,141 +250,496 @@
 
   <!--
     ── 새 게임을 추가할 때 ──────────────────────────────────────────
-    아래 <article class="card"> 한 덩어리를 복사해 그리드 맨 끝에 붙이면 된다.
+     한 덩어리를 복사해 그리드 맨 끝에 붙이면 된다.
     한국어 블록과 영어 블록 두 곳 모두에 넣어야 한다(같은 페이지 안에서
     assets/lang-toggle.js 가 <h1> 을 기준으로 언어를 나눈다).
-    카드가 늘어나면 그리드가 알아서 아래로 줄을 늘린다 — 다른 곳은 고칠 것이 없다.
+
+    아이콘은 assets/icons/<게임>.webp 와 .png 두 장을 같이 둔다.
+    원본 1024px 앱 아이콘을 224px 로 줄인 것이고, .webp 를 먼저 쓰되
+    못 읽는 브라우저만 .png 를 받는다.
+
+    배지는 스토어에 실제로 올라가 있으면 class="badge live", 아니면 class="badge".
     스토어 링크는 실제로 열리는 주소만 넣는다. 죽은 링크는 그 자체가 심사 반려 사유다.
+    「메일 초안 만들기」의 게임 목록(select)에도 같이 추가해야 한다.
   -->
 
   <div class="lang-block">
     <header class="hero">
-      <div class="brand">Baren81</div>
+      <p class="kicker">BAREN81 · GAME SUPPORT</p>
       <h1>게임 지원</h1>
-      <p>Baren81이 만든 게임의 공식 지원 창구입니다. 게임을 고르면 이용약관과 개인정보 처리방침이 바로 열립니다.</p>
+      <p class="lede">Baren81이 만든 게임의 공식 지원 창구입니다. 게임을 고르면 이용약관과 개인정보 처리방침이 바로 열립니다.</p>
+      <div class="hero-contact">
+        <span class="hc-label">문의</span>
+        <a class="hc-mail" href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a>
+        <button type="button" class="copy-mail" data-copy="barendevlog@gmail.com" data-done="복사했습니다">주소 복사</button>
+      </div>
+      <p class="hero-note">한국어 · English 답변 &nbsp;|&nbsp; 혼자 만들고 있어서 답변까지 며칠 걸릴 수 있습니다.</p>
     </header>
 
-    <section class="contact-top">
-      <strong>문의</strong>
-      <a class="mail" href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a>
-      <p class="hint">한국어 · English 답변 &nbsp;|&nbsp; 게임명, 기기와 OS, 앱 버전, 문제가 생긴 과정을 같이 보내 주시면 빠릅니다.</p>
+    <section class="sect">
+      <h2><span class="sn">01</span>게임과 문서</h2>
+      <div class="grid">
+        <article class="card">
+          <div class="card-top">
+            <picture>
+              <source srcset="assets/icons/call-the-cat.webp" type="image/webp">
+              <img class="ico" src="assets/icons/call-the-cat.png" alt="Call the Cat" width="72" height="72" loading="lazy" decoding="async">
+            </picture>
+            <div class="card-head">
+              <h3>Call the Cat</h3>
+              <p class="plat">Android · Google Play</p>
+            </div>
+            <span class="badge live">출시됨</span>
+          </div>
+          <p class="desc">고양이를 부르며 쉬어 가는 힐링 모드와, 몰려오는 적을 버티는 로그 모드를 함께 담은 전작입니다.</p>
+          <div class="links">
+            <a href="call-the-cat/terms-of-service.html">이용약관</a>
+            <a href="call-the-cat/privacy-policy.html">개인정보 처리방침</a>
+            <span class="sep"></span>
+            <a class="store" href="https://play.google.com/store/apps/details?id=com.baren81.callthecat">Google Play <span aria-hidden="true">&#8599;</span></a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <picture>
+              <source srcset="assets/icons/galaxy.webp" type="image/webp">
+              <img class="ico" src="assets/icons/galaxy.png" alt="Call the Cat: Galaxy" width="72" height="72" loading="lazy" decoding="async">
+            </picture>
+            <div class="card-head">
+              <h3>Call the Cat: Galaxy</h3>
+              <p class="plat">Android · iOS · Steam</p>
+            </div>
+            <span class="badge live">출시됨</span>
+          </div>
+          <p class="desc">우주복을 입은 루루와 작은 행성을 탐사하고 색칠합니다. 집과 우주선을 키운 뒤 드림 로그냥에서 몬스터와 보스를 상대합니다. Steam 에는 「Call the Cat」 이름으로 올라가 있습니다.</p>
+          <div class="links">
+            <a href="galaxy-terms-of-service.html">이용약관</a>
+            <a href="galaxy-privacy-policy.html">개인정보 처리방침</a>
+            <a href="galaxy-steam-terms-of-service.html">Steam 약관</a>
+            <a href="galaxy-steam-privacy-policy.html">Steam 개인정보</a>
+            <span class="sep"></span>
+            <a class="store" href="https://play.google.com/store/apps/details?id=com.runaria81.callthecatgalaxy">Google Play <span aria-hidden="true">&#8599;</span></a>
+            <a class="store" href="https://apps.apple.com/kr/app/call-the-cat-galaxy/id6800940131">App Store <span aria-hidden="true">&#8599;</span></a>
+            <a class="store" href="https://store.steampowered.com/app/4822670/Call_the_Cat/">Steam <span aria-hidden="true">&#8599;</span></a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <picture>
+              <source srcset="assets/icons/delivery-cat.webp" type="image/webp">
+              <img class="ico" src="assets/icons/delivery-cat.png" alt="Call the Cat: Delivery" width="72" height="72" loading="lazy" decoding="async">
+            </picture>
+            <div class="card-head">
+              <h3>Call the Cat: Delivery</h3>
+              <p class="plat">Android · 웹</p>
+            </div>
+            <span class="badge live">출시됨</span>
+          </div>
+          <p class="desc">지도에서 배달 코스를 견줘 보고 고르면, 수락한 순간 자동으로 출발하는 배달 게임입니다.</p>
+          <div class="links">
+            <a href="call-the-cat/delivery-cat-terms-of-use.html">이용약관</a>
+            <a href="call-the-cat/delivery-cat-privacy-policy.html">개인정보 처리방침</a>
+            <span class="sep"></span>
+            <a class="store" href="https://play.google.com/store/apps/details?id=com.barendevlog.deliverycat">Google Play <span aria-hidden="true">&#8599;</span></a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <picture>
+              <source srcset="assets/icons/serving.webp" type="image/webp">
+              <img class="ico" src="assets/icons/serving.png" alt="Call the Cat: Serving!" width="72" height="72" loading="lazy" decoding="async">
+            </picture>
+            <div class="card-head">
+              <h3>Call the Cat: Serving!</h3>
+              <p class="plat">웹 · 모바일 준비 중</p>
+            </div>
+            <span class="badge">준비 중</span>
+          </div>
+          <p class="desc">도도의 아찔한 한 그릇. 외발자전거로 균형을 잡으며 음식을 나르는 게임입니다.</p>
+          <div class="links">
+            <a href="call-the-cat/call-the-cat-serving-terms.html">이용약관</a>
+            <a href="call-the-cat/call-the-cat-serving-privacy.html">개인정보 처리방침</a>
+          </div>
+        </article>
+      </div>
     </section>
 
-    <section class="grid">
-      <article class="card">
-        <h2>Call the Cat</h2>
-        <p class="plat">모바일</p>
-        <div class="links">
-          <a href="call-the-cat/terms-of-service.html">이용약관</a>
-          <a href="call-the-cat/privacy-policy.html">개인정보 처리방침</a>
-          <span class="sep"></span>
-          <a class="store" href="https://play.google.com/store/apps/details?id=com.baren81.callthecat">Google Play</a>
-        </div>
-      </article>
-
-      <article class="card">
-        <h2>Call the Cat: Galaxy</h2>
-        <p class="plat">모바일 · Steam</p>
-        <div class="links">
-          <a href="galaxy-terms-of-service.html">이용약관</a>
-          <a href="galaxy-privacy-policy.html">개인정보 처리방침</a>
-          <a href="galaxy-steam-terms-of-service.html">Steam 약관</a>
-          <a href="galaxy-steam-privacy-policy.html">Steam 개인정보</a>
-          <span class="sep"></span>
-          <a class="store" href="https://apps.apple.com/kr/app/call-the-cat-galaxy/id6800940131">App Store</a>
-          <a class="store" href="https://store.steampowered.com/app/4822670/Call_the_Cat/">Steam</a>
-        </div>
-      </article>
-
-      <article class="card">
-        <h2>Call the Cat: Delivery</h2>
-        <p class="plat">모바일 · 웹</p>
-        <div class="links">
-          <a href="call-the-cat/delivery-cat-terms-of-use.html">이용약관</a>
-          <a href="call-the-cat/delivery-cat-privacy-policy.html">개인정보 처리방침</a>
-        </div>
-      </article>
-
-      <article class="card">
-        <h2>Call the Cat: Serving!</h2>
-        <p class="plat">웹 · 모바일</p>
-        <div class="links">
-          <a href="call-the-cat/call-the-cat-serving-terms.html">이용약관</a>
-          <a href="call-the-cat/call-the-cat-serving-privacy.html">개인정보 처리방침</a>
-        </div>
-      </article>
+    <section class="sect">
+      <h2><span class="sn">02</span>자주 묻는 질문</h2>
+      <p class="sect-lede">항목을 누르면 답이 열립니다.</p>
+        <details class="qa">
+          <summary><span class="num">01</span> 결제 · 환불</summary>
+          <div class="qa-body">
+            <p><b>우리 게임에는 인앱결제가 없습니다.</b> 네 게임 모두 결제 항목을 두지 않았고, 광고 제거 상품도 없습니다. 그래서 결제·구매 복원·환불 처리를 하지 않습니다.</p>
+            <p><b>Steam 판(스토어 이름 「Call the Cat」)은 2026년 9월 17일부로 무료로 바뀝니다.</b> 그전에 구매하신 분의 환불은 Steam 환불 정책에 따라 Steam 에서 처리합니다.</p>
+            <p>나중에 결제가 생기면 그 게임의 이용약관과 개인정보 처리방침을 먼저 고치고 이 자리에도 적겠습니다.</p>
+          </div>
+        </details>
+        <details class="qa">
+          <summary><span class="num">02</span> 버그 · 플레이 문제</summary>
+          <div class="qa-body">
+            <p>아래 「메일 초안 만들기」로 보내 주시면 가장 빠릅니다. 게임 이름, 기기와 OS, 앱 버전, 문제가 생기기까지 무엇을 눌렀는지를 같이 적어 주세요.</p>
+            <p>오류 문구가 화면에 보이면 그 부분을 캡처해 첨부해 주시면 도움이 됩니다.</p>
+            <p>혼자 만들고 있어서 답변까지 며칠 걸릴 수 있습니다.</p>
+          </div>
+        </details>
+        <details class="qa">
+          <summary><span class="num">03</span> 진행 · 저장 데이터</summary>
+          <div class="qa-body">
+            <p>기기에만 저장되는 진행도는 앱을 지우거나 기기 데이터를 초기화하면 함께 사라질 수 있습니다.</p>
+            <p>클라우드 저장을 쓰는 게임은 <b>같은 플랫폼 계정으로 다시 로그인</b>하면 진행도가 돌아옵니다. Google Play 게임즈, Game Center·iCloud 같은 것입니다.</p>
+            <p>게임마다 저장 방식이 다릅니다. 어느 쪽인지는 그 게임의 개인정보 처리방침 「보관과 삭제」 절에 적혀 있습니다.</p>
+          </div>
+        </details>
+        <details class="qa">
+          <summary><span class="num">04</span> 광고 · 개인정보</summary>
+          <div class="qa-body">
+            <p><b>네 게임 모두 Google AdMob 광고만 연결돼 있습니다.</b> 결제가 없으므로 광고를 구매로 없애는 방법도 없습니다.</p>
+            <p>맞춤 광고 여부는 바꿀 수 있습니다. iOS 는 첫 실행 때 뜨는 추적 허용 창에서, Android 는 게임 안 개인정보 옵션을 다시 열어 고칠 수 있고, 기기의 광고 설정으로도 관리합니다.</p>
+            <p>추적을 허용하지 않아도 게임은 그대로 이용할 수 있습니다. 광고가 맞춤형이 아닌 형태로 나올 뿐입니다.</p>
+          </div>
+        </details>
+        <details class="qa">
+          <summary><span class="num">05</span> 계정 · 삭제 요청</summary>
+          <div class="qa-body">
+            <p><b>Baren81 이 직접 운영하는 회원 가입은 없습니다.</b> 이름·전화번호·주소·연락처·사진·정확한 위치를 게임 화면에서 받지 않습니다.</p>
+            <p>저희가 직접 갖고 있는 정보의 열람·정정·삭제·처리정지는 <a href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a> 으로 요청해 주세요.</p>
+            <p>다만 <b>플랫폼이 단독으로 관리하는 정보</b>(스토어 계정, 클라우드 저장, 광고 식별자 등)는 해당 플랫폼에 직접 요청하셔야 합니다. 저희 쪽에서 지울 수 없습니다.</p>
+          </div>
+        </details>
+        <details class="qa">
+          <summary><span class="num">06</span> 문서 · 정책</summary>
+          <div class="qa-body">
+            <p>위 게임 카드에서 각 게임의 이용약관과 개인정보 처리방침이 바로 열립니다. Galaxy 는 모바일판과 Steam 판의 문서가 따로 있습니다.</p>
+            <p>기능이나 SDK 가 바뀌면 문서에 수정일을 적고 함께 갱신합니다.</p>
+          </div>
+        </details>
     </section>
 
-    <div class="footer">
-      <span>© 2026 Baren81</span>
-      <span><a href="call-the-cat/">문서 전체 보기</a></span>
-    </div>
+    <section class="sect">
+      <h2><span class="sn">03</span>메일 초안 만들기</h2>
+      <p class="sect-lede">아래를 채우면 메일 앱에 넣을 초안이 만들어집니다. <b>이 페이지에서 전송되지 않습니다.</b> 메일 앱에서 직접 확인하고 보내세요.</p>
+      <div class="draft">
+        <div class="row">
+          <label>문의 종류
+            <select data-f="kind"><option value="버그 · 플레이 문제">버그 · 플레이 문제</option><option value="진행 · 저장 데이터">진행 · 저장 데이터</option><option value="광고 · 개인정보">광고 · 개인정보</option><option value="구매 · 복원 · 환불">구매 · 복원 · 환불</option><option value="개인정보 열람 · 삭제 요청">개인정보 열람 · 삭제 요청</option><option value="건의 · 그 밖의 문의">건의 · 그 밖의 문의</option></select>
+          </label>
+          <label>게임
+            <select data-f="game"><option value="Call the Cat">Call the Cat</option><option value="Call the Cat: Galaxy">Call the Cat: Galaxy</option><option value="Call the Cat: Delivery">Call the Cat: Delivery</option><option value="Call the Cat: Serving!">Call the Cat: Serving!</option></select>
+          </label>
+          <label>기기
+            <select data-f="plat"><option value="선택 안 함">선택 안 함</option><option value="Android">Android</option><option value="iPhone / iPad">iPhone / iPad</option><option value="Windows (Steam)">Windows (Steam)</option><option value="웹 브라우저">웹 브라우저</option></select>
+          </label>
+        </div>
+        <label class="full">앱 버전 (선택)
+          <input type="text" data-f="ver" placeholder="예: 1.0.3 — 게임 안 설정 화면에서 볼 수 있습니다">
+        </label>
+        <label class="full">내용
+          <textarea data-f="msg" rows="5" maxlength="800" placeholder="어느 화면에서 무엇을 눌렀을 때 생겼는지 적어 주세요."></textarea>
+        </label>
+        <p class="warn">비밀번호, 인증번호, 카드 번호는 적지 마세요. 저희는 그런 것을 묻지 않습니다. 화면 캡처는 메일 앱에서 필요한 것만 첨부해 주세요.</p>
+        <div class="draft-actions">
+          <a class="btn primary" data-act="open" href="mailto:barendevlog@gmail.com">메일 앱 열기</a>
+          <button type="button" class="btn" data-act="copy" data-done="복사했습니다">초안 복사</button>
+        </div>
+        <p class="draft-note">메일 앱이 열리지 않으면 「초안 복사」를 눌러 붙여 넣어 주세요.</p>
+      </div>
+    </section>
+
+    <section class="sect">
+      <h2><span class="sn">04</span>다른 곳</h2>
+      <div class="channels">
+        <a href="https://play.google.com/store/apps/developer?id=Barendevlog">Google Play 개발자 페이지 <span aria-hidden="true">&#8599;</span></a>
+        <a href="https://store.steampowered.com/search/?developer=barendevlog">Steam <span aria-hidden="true">&#8599;</span></a>
+        <a href="https://barendevlog.com">개발 블로그 <span aria-hidden="true">&#8599;</span></a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p class="fcopy">&copy; 2026 Baren81 &nbsp;·&nbsp; <a href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a></p>
+      <p class="fcredit">이 페이지에는 마비노기가 제공한 마비옛체 서체가 적용되어 있습니다.</p>
+    </footer>
   </div>
 
-  <div class="lang-block" lang="en">
+  <div class="lang-block">
     <header class="hero">
-      <div class="brand">Baren81</div>
+      <p class="kicker">BAREN81 · GAME SUPPORT</p>
       <h1>Game Support</h1>
-      <p>Official support hub for games by Baren81. Pick a game to open its Terms of Service and Privacy Policy.</p>
+      <p class="lede">Official support hub for games by Baren81. Pick a game to open its Terms of Service and Privacy Policy.</p>
+      <div class="hero-contact">
+        <span class="hc-label">Contact</span>
+        <a class="hc-mail" href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a>
+        <button type="button" class="copy-mail" data-copy="barendevlog@gmail.com" data-done="Copied">Copy address</button>
+      </div>
+      <p class="hero-note">We reply in English · Korean &nbsp;|&nbsp; This is a one-person studio, so a reply may take a few days.</p>
     </header>
 
-    <section class="contact-top">
-      <strong>Contact</strong>
-      <a class="mail" href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a>
-      <p class="hint">We reply in English · Korean &nbsp;|&nbsp; Please include the game name, device and OS, app version, and the steps that led to the problem.</p>
+    <section class="sect">
+      <h2><span class="sn">01</span>Games and documents</h2>
+      <div class="grid">
+        <article class="card">
+          <div class="card-top">
+            <picture>
+              <source srcset="assets/icons/call-the-cat.webp" type="image/webp">
+              <img class="ico" src="assets/icons/call-the-cat.png" alt="Call the Cat" width="72" height="72" loading="lazy" decoding="async">
+            </picture>
+            <div class="card-head">
+              <h3>Call the Cat</h3>
+              <p class="plat">Android · Google Play</p>
+            </div>
+            <span class="badge live">LIVE</span>
+          </div>
+          <p class="desc">The first game — a calm healing mode and a roguelike survival mode in one.</p>
+          <div class="links">
+            <a href="call-the-cat/terms-of-service.html">Terms of Service</a>
+            <a href="call-the-cat/privacy-policy.html">Privacy Policy</a>
+            <span class="sep"></span>
+            <a class="store" href="https://play.google.com/store/apps/details?id=com.baren81.callthecat">Google Play <span aria-hidden="true">&#8599;</span></a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <picture>
+              <source srcset="assets/icons/galaxy.webp" type="image/webp">
+              <img class="ico" src="assets/icons/galaxy.png" alt="Call the Cat: Galaxy" width="72" height="72" loading="lazy" decoding="async">
+            </picture>
+            <div class="card-head">
+              <h3>Call the Cat: Galaxy</h3>
+              <p class="plat">Android · iOS · Steam</p>
+            </div>
+            <span class="badge live">LIVE</span>
+          </div>
+          <p class="desc">Explore and paint tiny planets with Ruru in a spacesuit, grow your home and ship, then fight through Dream LogNyang. It is listed on Steam as "Call the Cat".</p>
+          <div class="links">
+            <a href="galaxy-terms-of-service.html">Terms of Service</a>
+            <a href="galaxy-privacy-policy.html">Privacy Policy</a>
+            <a href="galaxy-steam-terms-of-service.html">Steam Terms</a>
+            <a href="galaxy-steam-privacy-policy.html">Steam Privacy</a>
+            <span class="sep"></span>
+            <a class="store" href="https://play.google.com/store/apps/details?id=com.runaria81.callthecatgalaxy">Google Play <span aria-hidden="true">&#8599;</span></a>
+            <a class="store" href="https://apps.apple.com/kr/app/call-the-cat-galaxy/id6800940131">App Store <span aria-hidden="true">&#8599;</span></a>
+            <a class="store" href="https://store.steampowered.com/app/4822670/Call_the_Cat/">Steam <span aria-hidden="true">&#8599;</span></a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <picture>
+              <source srcset="assets/icons/delivery-cat.webp" type="image/webp">
+              <img class="ico" src="assets/icons/delivery-cat.png" alt="Call the Cat: Delivery" width="72" height="72" loading="lazy" decoding="async">
+            </picture>
+            <div class="card-head">
+              <h3>Call the Cat: Delivery</h3>
+              <p class="plat">Android · Web</p>
+            </div>
+            <span class="badge live">LIVE</span>
+          </div>
+          <p class="desc">Compare delivery routes on the map, pick one, and the run starts the moment you accept.</p>
+          <div class="links">
+            <a href="call-the-cat/delivery-cat-terms-of-use.html">Terms of Use</a>
+            <a href="call-the-cat/delivery-cat-privacy-policy.html">Privacy Policy</a>
+            <span class="sep"></span>
+            <a class="store" href="https://play.google.com/store/apps/details?id=com.barendevlog.deliverycat">Google Play <span aria-hidden="true">&#8599;</span></a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <picture>
+              <source srcset="assets/icons/serving.webp" type="image/webp">
+              <img class="ico" src="assets/icons/serving.png" alt="Call the Cat: Serving!" width="72" height="72" loading="lazy" decoding="async">
+            </picture>
+            <div class="card-head">
+              <h3>Call the Cat: Serving!</h3>
+              <p class="plat">Web · mobile in progress</p>
+            </div>
+            <span class="badge">IN PROGRESS</span>
+          </div>
+          <p class="desc">Dodo's precarious bowl. Keep your balance on a unicycle while carrying the food.</p>
+          <div class="links">
+            <a href="call-the-cat/call-the-cat-serving-terms-en.html">Terms of Use</a>
+            <a href="call-the-cat/call-the-cat-serving-privacy-en.html">Privacy Policy</a>
+          </div>
+        </article>
+      </div>
     </section>
 
-    <section class="grid">
-      <article class="card">
-        <h2>Call the Cat</h2>
-        <p class="plat">Mobile</p>
-        <div class="links">
-          <a href="call-the-cat/terms-of-service.html">Terms of Service</a>
-          <a href="call-the-cat/privacy-policy.html">Privacy Policy</a>
-          <span class="sep"></span>
-          <a class="store" href="https://play.google.com/store/apps/details?id=com.baren81.callthecat">Google Play</a>
-        </div>
-      </article>
-
-      <article class="card">
-        <h2>Call the Cat: Galaxy</h2>
-        <p class="plat">Mobile · Steam</p>
-        <div class="links">
-          <a href="galaxy-terms-of-service.html">Terms of Service</a>
-          <a href="galaxy-privacy-policy.html">Privacy Policy</a>
-          <a href="galaxy-steam-terms-of-service.html">Steam Terms</a>
-          <a href="galaxy-steam-privacy-policy.html">Steam Privacy</a>
-          <span class="sep"></span>
-          <a class="store" href="https://apps.apple.com/kr/app/call-the-cat-galaxy/id6800940131">App Store</a>
-          <a class="store" href="https://store.steampowered.com/app/4822670/Call_the_Cat/">Steam</a>
-        </div>
-      </article>
-
-      <article class="card">
-        <h2>Call the Cat: Delivery</h2>
-        <p class="plat">Mobile · Web</p>
-        <div class="links">
-          <a href="call-the-cat/delivery-cat-terms-of-use.html">Terms of Use</a>
-          <a href="call-the-cat/delivery-cat-privacy-policy.html">Privacy Policy</a>
-        </div>
-      </article>
-
-      <article class="card">
-        <h2>Call the Cat: Serving!</h2>
-        <p class="plat">Web · Mobile</p>
-        <div class="links">
-          <a href="call-the-cat/call-the-cat-serving-terms-en.html">Terms of Use</a>
-          <a href="call-the-cat/call-the-cat-serving-privacy-en.html">Privacy Policy</a>
-        </div>
-      </article>
+    <section class="sect">
+      <h2><span class="sn">02</span>Frequently asked</h2>
+      <p class="sect-lede">Tap an item to open the answer.</p>
+        <details class="qa">
+          <summary><span class="num">01</span> Payments · Refunds</summary>
+          <div class="qa-body">
+            <p><b>Our games have no in-app purchases.</b> None of the four has any paid item, and there is no ad-removal product, so we do not process payments, purchase restores, or refunds.</p>
+            <p><b>The Steam build (listed as "Call the Cat") becomes free on 17 September 2026.</b> Refunds for purchases made before then are handled by Steam under the Steam refund policy.</p>
+            <p>If purchases are ever added, we will update that game's Terms and Privacy Policy first, and say so here.</p>
+          </div>
+        </details>
+        <details class="qa">
+          <summary><span class="num">02</span> Bugs · Gameplay problems</summary>
+          <div class="qa-body">
+            <p>The fastest way is the draft builder below. Please include the game name, your device and OS, the app version, and what you tapped before the problem appeared.</p>
+            <p>If an error message appears on screen, a screenshot of it helps a lot.</p>
+            <p>This is a one-person studio, so a reply may take a few days.</p>
+          </div>
+        </details>
+        <details class="qa">
+          <summary><span class="num">03</span> Progress · Saved data</summary>
+          <div class="qa-body">
+            <p>Progress stored only on your device can disappear when you delete the app or reset the device.</p>
+            <p>For games that use cloud save, <b>signing back in with the same platform account</b> restores your progress — Google Play Games, Game Center, or iCloud.</p>
+            <p>Games differ. Which one applies is written in the "Retention and Deletion" section of that game's Privacy Policy.</p>
+          </div>
+        </details>
+        <details class="qa">
+          <summary><span class="num">04</span> Ads · Privacy</summary>
+          <div class="qa-body">
+            <p><b>All four games use Google AdMob ads only.</b> Since there are no purchases, there is also no way to buy the ads away.</p>
+            <p>You can change whether ads are personalised. On iOS use the tracking prompt shown at first launch; on Android reopen the privacy option inside the game. Your device ad settings also control this.</p>
+            <p>Declining tracking does not limit the game — ads simply appear in a non-personalised form.</p>
+          </div>
+        </details>
+        <details class="qa">
+          <summary><span class="num">05</span> Account · Deletion requests</summary>
+          <div class="qa-body">
+            <p><b>There is no Baren81 account to sign up for.</b> We do not ask for your name, phone number, address, contacts, photos, or precise location in the game.</p>
+            <p>To access, correct, delete, or stop processing of information we hold directly, write to <a href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a>.</p>
+            <p>Information <b>held solely by a platform</b> — store accounts, cloud saves, advertising identifiers — must be requested from that platform. We cannot delete it for you.</p>
+          </div>
+        </details>
+        <details class="qa">
+          <summary><span class="num">06</span> Documents · Policies</summary>
+          <div class="qa-body">
+            <p>Each game card above opens that game's Terms and Privacy Policy. Galaxy has separate documents for the mobile and Steam builds.</p>
+            <p>When features or SDKs change, we update the documents and stamp them with the revision date.</p>
+          </div>
+        </details>
     </section>
 
-    <div class="footer">
-      <span>© 2026 Baren81</span>
-      <span><a href="call-the-cat/">All documents</a></span>
-    </div>
+    <section class="sect">
+      <h2><span class="sn">03</span>Build an email draft</h2>
+      <p class="sect-lede">Fill this in and we will build a draft for your mail app. <b>Nothing is sent from this page.</b> Review and send it yourself.</p>
+      <div class="draft">
+        <div class="row">
+          <label>Topic
+            <select data-f="kind"><option value="Bug / gameplay problem">Bug / gameplay problem</option><option value="Progress / saved data">Progress / saved data</option><option value="Ads / privacy">Ads / privacy</option><option value="Purchase / restore / refund">Purchase / restore / refund</option><option value="Data access or deletion request">Data access or deletion request</option><option value="Suggestion / other">Suggestion / other</option></select>
+          </label>
+          <label>Game
+            <select data-f="game"><option value="Call the Cat">Call the Cat</option><option value="Call the Cat: Galaxy">Call the Cat: Galaxy</option><option value="Call the Cat: Delivery">Call the Cat: Delivery</option><option value="Call the Cat: Serving!">Call the Cat: Serving!</option></select>
+          </label>
+          <label>Device
+            <select data-f="plat"><option value="Not specified">Not specified</option><option value="Android">Android</option><option value="iPhone / iPad">iPhone / iPad</option><option value="Windows (Steam)">Windows (Steam)</option><option value="Web browser">Web browser</option></select>
+          </label>
+        </div>
+        <label class="full">App version (optional)
+          <input type="text" data-f="ver" placeholder="e.g. 1.0.3 — shown on the settings screen inside the game">
+        </label>
+        <label class="full">Message
+          <textarea data-f="msg" rows="5" maxlength="800" placeholder="Tell us which screen you were on and what you tapped."></textarea>
+        </label>
+        <p class="warn">Never include passwords, verification codes, or card numbers. We will never ask for them. Attach only the screenshots you need, from your mail app.</p>
+        <div class="draft-actions">
+          <a class="btn primary" data-act="open" href="mailto:barendevlog@gmail.com">Open mail app</a>
+          <button type="button" class="btn" data-act="copy" data-done="Copied">Copy draft</button>
+        </div>
+        <p class="draft-note">If your mail app does not open, press "Copy draft" and paste it instead.</p>
+      </div>
+    </section>
+
+    <section class="sect">
+      <h2><span class="sn">04</span>Elsewhere</h2>
+      <div class="channels">
+        <a href="https://play.google.com/store/apps/developer?id=Barendevlog">Google Play developer page <span aria-hidden="true">&#8599;</span></a>
+        <a href="https://store.steampowered.com/search/?developer=barendevlog">Steam <span aria-hidden="true">&#8599;</span></a>
+        <a href="https://barendevlog.com">Development blog <span aria-hidden="true">&#8599;</span></a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p class="fcopy">&copy; 2026 Baren81 &nbsp;·&nbsp; <a href="mailto:barendevlog@gmail.com">barendevlog@gmail.com</a></p>
+      <p class="fcredit">This page uses the Mabinogi Classic typeface provided by Mabinogi (Nexon Korea).</p>
+    </footer>
   </div>
-</main>
-<script src="assets/lang-toggle.js?v=20260903" defer></script>
-</body>
+  <script src="assets/lang-toggle.js?v=20260909"></script>
+  <script>
+  /* 주소·초안 복사와 mailto 조립. 서버로 보내는 것은 없다.
+     클립보드가 막힌 환경(비 HTTPS·구형 브라우저)에서는 조용히 실패하는 대신
+     execCommand 로 한 번 더 시도하고, 그것도 안 되면 버튼 문구를 되돌린다. */
+  (function () {
+    function flash(btn, done) {
+      var old = btn.textContent;
+      btn.textContent = done;
+      setTimeout(function () { btn.textContent = old; }, 1600);
+    }
+    function copy(text, btn, done) {
+      function fallback() {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '-1000px';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        document.body.removeChild(ta);
+        if (ok) flash(btn, done);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { flash(btn, done); }, fallback);
+      } else {
+        fallback();
+      }
+    }
+
+    /* 이메일 주소 복사 */
+    Array.prototype.forEach.call(document.querySelectorAll('.copy-mail'), function (btn) {
+      btn.addEventListener('click', function () {
+        copy(btn.getAttribute('data-copy'), btn, btn.getAttribute('data-done'));
+      });
+    });
+
+    /* 메일 초안 — 폼을 읽어 제목과 본문을 만든다 */
+    Array.prototype.forEach.call(document.querySelectorAll('.draft'), function (box) {
+      function val(name) {
+        var el = box.querySelector('[data-f="' + name + '"]');
+        return el ? el.value.trim() : '';
+      }
+      function build() {
+        var subject = '[' + val('game') + '] ' + val('kind');
+        var lines = [
+          '게임 / Game: ' + val('game'),
+          '문의 종류 / Topic: ' + val('kind'),
+          '기기 / Device: ' + val('plat'),
+          '앱 버전 / Version: ' + (val('ver') || '-'),
+          '',
+          val('msg'),
+          ''
+        ];
+        return { subject: subject, body: lines.join('\n') };
+      }
+      var open = box.querySelector('[data-act="open"]');
+      var copyBtn = box.querySelector('[data-act="copy"]');
+      if (open) {
+        open.addEventListener('click', function () {
+          var d = build();
+          open.setAttribute('href',
+            'mailto:barendevlog@gmail.com?subject=' + encodeURIComponent(d.subject) +
+            '&body=' + encodeURIComponent(d.body));
+        });
+      }
+      if (copyBtn) {
+        copyBtn.addEventListener('click', function () {
+          var d = build();
+          copy(d.subject + '\n\n' + d.body, copyBtn, copyBtn.getAttribute('data-done'));
+        });
+      }
+    });
+  }());
+  </script>
+</main></body>
 </html>

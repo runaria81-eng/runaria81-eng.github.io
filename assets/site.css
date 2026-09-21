@@ -57,6 +57,14 @@
 
 *{ box-sizing: border-box }
 
+/*
+ * 한글 줄바꿈 — 2026-09-09
+ * 기본값(normal)은 한글을 글자 단위로 끊어서 "게임을 고 / 르면" 처럼 낱말이 반토막 난다.
+ * keep-all 로 낱말 경계에서만 끊고, 끊을 데가 없는 긴 문자열(주소·이메일)만
+ * overflow-wrap 으로 강제로 넘긴다. 이 두 줄이 모든 페이지의 글줄을 결정한다.
+ */
+html{ word-break: keep-all; overflow-wrap: break-word }
+
 html{ color-scheme: dark }
 html[data-theme="callthecat"],
 html[data-theme="deliverycat"]{ color-scheme: light }

@@ -73,7 +73,7 @@
   function apply(groups, mode) {
     var firstShown = true;
     for (var i = 0; i < groups.length; i++) {
-      var show = mode === 'both' || groups[i].lang === mode;
+      var show = groups[i].lang === mode;
       for (var j = 0; j < groups[i].nodes.length; j++) {
         groups[i].nodes[j].hidden = !show;
       }
@@ -120,19 +120,20 @@
     bar.className = 'lang-switch';
     bar.setAttribute('aria-label', 'Language / 언어');
     var label = document.createElement('b');
-    label.textContent = 'Language / 언어';
+    label.textContent = '언어 / Lang';
     bar.appendChild(label);
 
+    // 한 번에 한 언어만 보여 준다(2026-09-09 운영자 결정).
+    // 예전에 있던 '둘 다 / Both' 는 같은 내용을 두 번 읽히게 만들어 없앴다.
     var options = [
       { mode: 'ko', text: '한국어' },
-      { mode: 'en', text: 'English' },
-      { mode: 'both', text: '둘 다 / Both' }
+      { mode: 'en', text: 'English' }
     ];
     var buttons = [];
 
     function select(mode, persist) {
       apply(groups, mode);
-      document.documentElement.setAttribute('lang', mode === 'both' ? 'ko' : mode);
+      document.documentElement.setAttribute('lang', mode);
       for (var b = 0; b < buttons.length; b++) {
         buttons[b].setAttribute(
           'aria-pressed', buttons[b].dataset.mode === mode ? 'true' : 'false');
@@ -167,7 +168,8 @@
 
     var saved = null;
     try { saved = localStorage.getItem(STORE_KEY); } catch (e) { /* 무시 */ }
-    if (saved !== 'ko' && saved !== 'en' && saved !== 'both') {
+    // 예전에 'both' 를 골라 둔 방문자가 있으므로 그 값도 걸러 낸다.
+    if (saved !== 'ko' && saved !== 'en') {
       saved = (navigator.language || '').toLowerCase().indexOf('ko') === 0 ? 'ko' : 'en';
     }
     select(saved, false);
